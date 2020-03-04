@@ -1,12 +1,13 @@
 ---
 title: "STATS 100 Investigations"
 author: "Anna Fergusson (Department of Statistics, University of Auckland)"
-output: html_document
-runtime: shiny
+output: 
+  html_document:
+    df_print: paged
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(shiny)
 library(tidyverse)
 library(lubridate)
@@ -16,6 +17,8 @@ library(stringr)
 library(ggthemr)
 ggthemr("fresh")
 library(patchwork)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
 <link href="https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap" rel="stylesheet">
@@ -53,7 +56,7 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
 
 ## 1A Google eats?
 
-```{r}
+```{r, context="data"}
 file_name <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vQncFJgi1nqIMdn5zcaCxqv8QjQuAEmSWbzSXC80bkp6PwKoUDStY4rsYGao-MqC5Qgrsk9S4hWSsA_/pub?gid=0&single=true&output=csv"
 
 df_food_prices <- read_csv(file_name) %>%
@@ -69,13 +72,13 @@ food_items <- df_food_prices %>%
   unique()
 ```
 
-```{r}
+```{r, context="render"}
 textInput("search_term", "Google search term", "tomato")
 selectInput("food_name", "Food item", c("default"))
 actionButton("update_data", "Update plots")
 ```
 
-```{r}
+```{r, context="server"}
 values <- reactiveValues(df_data = NULL,
                          min_date = NULL,
                          chart_title = NULL, 
@@ -161,10 +164,8 @@ observeEvent(input$update_data, {
     }
     removeModal()
   })
-```
 
-```{r}
-renderPlot({
+output$time_plot <- renderPlot({
   if (is.null(values$df_data)) return()
   values$df_data %>%
     filter(date >= values$min_date) %>%
@@ -183,10 +184,8 @@ renderPlot({
          caption = values$chart_sources,
          x = "Month")
 })
-```
 
-```{r}
-renderPlot({
+output$corr_plot <- renderPlot({
   if (is.null(values$df_data)) return()
   values$df_data %>%
     select(date, series, value) %>%
@@ -213,4 +212,12 @@ renderPlot({
          caption = values$chart_sources) 
   p + plot_spacer()
 })
+```
+
+```{r, context="render"}
+plotOutput("time_plot")
+```
+
+```{r, context="render"}
+plotOutput("corr_plot")
 ```
