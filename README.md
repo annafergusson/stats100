@@ -1,1 +1,1 @@
-# stats100investigations
+# stats100
