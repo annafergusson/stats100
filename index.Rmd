@@ -59,8 +59,11 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
 ```{r, context="data"}
 file_name <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vQncFJgi1nqIMdn5zcaCxqv8QjQuAEmSWbzSXC80bkp6PwKoUDStY4rsYGao-MqC5Qgrsk9S4hWSsA_/pub?gid=0&single=true&output=csv"
 
+# change this with next investigation (the .1 thing below)
 df_food_prices <- read_csv(file_name) %>%
-  mutate(date = ymd(glue("{Period}.1"))) %>%
+  mutate(date = ymd(case_when(
+    str_sub(Period, start= -2) == ".1" ~ glue("{Period}0.1"),
+    TRUE ~ glue("{Period}.1")))) %>%
   rename(value = Data_value, food = Series_title_1) %>%
   select(date, value, food) %>%
   mutate(date = floor_date(date, unit = "1 months" )) %>%
