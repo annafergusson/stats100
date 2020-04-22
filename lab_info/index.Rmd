@@ -1,0 +1,115 @@
+---
+title: "STATS 100 Online labs"
+output: 
+  learnr::tutorial:
+    progressive: TRUE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 60)
+
+```
+
+
+```{css}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+```
+
+## Lab info for students {data-progressive=FALSE}
+
+### Need help with the labs?
+
+As this is the first time we've offered these labs online, rather than in person, there might be aspects of the labs that are not as clear as they should be. We know that when you are working on these activities by yourself, it can be frustrating when you can't work out what to do! If you have any questions and you're on campus, you can always pop by Anna's office and ask her for help. Alternatively, you can write a question on Piazza and ask your fellow students for help :-) **Remember, we expect questions about the labs, so please please please ask them!**
+
+![](https://i.chzbgr.com/full/6862465536/h5FC00A8C/any-questions){style="width:50%"}
+
+### You want me to code?
+
+Some of these labs will use programming languages like [R](https://www.theta.co.nz/news-blogs/tech-blog/what-is-r/). For this course, we will focus on learning how to adapt code to get what we want! We don't expect any students to know how to program or want to become programmers, but we hope you'll see that it's maybe something you could do and learn more about if you want to :-) **Knowing just a little bit about code and how other people use code is complementary to knowing how to use statistical methods to learn from data. Once you can start to think about what is possible to automate (get a computer to do), the more ideas you can develop for how to collect or generate data, or how to use algorithms to solve problems or make predictions.**
+
+![](http://www.quickmeme.com/img/37/37d58eec3f40957821ed9704bb747fb74db3dd0a3b657e16a77bfb1840dab7a2.jpg){style="width:50%"}
+
+### How do we submit our work for each online lab?
+
+Each lab task finishes with a challenge. For each challenge, you will be told what screenshots you need to include in your submission. For each submission, you'll also be asked to reflect on what you learned. Remember to use the online lab template (you can find this on CANVAS) and to download/save the document as PDF before submitting through CANVAS.
