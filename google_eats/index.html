@@ -192,6 +192,15 @@ tr {
 
 .center-align{ text-align:center;}
 </style>
+<script type="text/javascript">
+$(function() {
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+})
+</script>
 <div id="section-google-eats" class="section level2">
 <h2>Google eats?</h2>
 <p>Is there an association between the price of food in NZ and people within NZ searching for food items on Google? Try out different food items in the app below and explore for yourself!</p>
@@ -206,7 +215,11 @@ tr {
 </div>
 </div><button id="update_data" type="button" class="btn btn-default action-button">Update plots</button></p>
 <div id="time_plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
-<div id="corr_plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div> 
+<div id="corr_plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+</div>
+<div id="section-return-to-home-page" class="section level2">
+<h2><a>Return to home page</a></h2>
+
 <script type="application/shiny-prerendered" data-context="server-start">
 library(learnr)
 library(tidyverse)

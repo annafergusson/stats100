@@ -159,6 +159,12 @@ $('.ace_editor').each(function( index ) {
   }
 });
 
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+
 })
 ```
 
@@ -341,3 +347,4 @@ googleTranslate(fromText = text,
 | Original she |  |  |  |
 | TOTAL |  |  |  10 |
 
+## Return to home page

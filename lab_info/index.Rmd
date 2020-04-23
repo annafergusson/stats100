@@ -96,6 +96,16 @@ tr {
 .center-align{ text-align:center;}
 ```
 
+```{js}
+$(function() {
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+})
+```
+
 ## Lab info for students {data-progressive=FALSE}
 
 ### Need help with the labs?
@@ -113,3 +123,5 @@ Some of these labs will use programming languages like [R](https://www.theta.co.
 ### How do we submit our work for each online lab?
 
 Each lab task finishes with a challenge. For each challenge, you will be told what screenshots you need to include in your submission. For each submission, you'll also be asked to reflect on what you learned. Remember to use the online lab template (you can find this on CANVAS) and to download/save the document as PDF before submitting through CANVAS.
+
+## Return to home page

@@ -142,16 +142,15 @@ $(function() {
     editor.setFontSize("16px");
     });
 
-/*    
-var target = document.getElementById('tutorial-exercise-glue-eg-output')
-var observer = new MutationObserver(function(mutations) {
-  var old = $('#tutorial-exercise-glue-eg-output > pre > code').text();   
-  $('#tutorial-exercise-glue-eg-output > pre > code').html(old.replace("FUCK","F**K"));
-});
-var config = { attributes: true, childList: true, characterData: true };
-observer.observe(target, config);
+
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
 })
-*/
 ```
 
 ## Lab 3
@@ -567,3 +566,5 @@ image_read(url) %>%
                  gravity = "center",
                  font = "Impact")
 ```
+
+## Return to home page

@@ -114,6 +114,17 @@ tr {
 .center-align{ text-align:center;}
 ```
 
+```{js}
+$(function() {
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+})
+```
+
+
 ## Google eats?
 
 Is there an association between the price of food in NZ and people within NZ searching for food items on Google? Try out different food items in the app below and explore for yourself!
@@ -285,3 +296,5 @@ plotOutput("time_plot")
 ```{r, context="render"}
 plotOutput("corr_plot")
 ```
+
+## <a>Return to home page</a>

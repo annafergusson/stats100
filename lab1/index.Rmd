@@ -124,6 +124,13 @@ $('.ace_editor').each(function( index ) {
   editor.getSession().setUseWrapMode(true);
   editor.setFontSize("16px");
   });
+  
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+
 })
 ```
 
@@ -488,3 +495,4 @@ trend_data %>%
   theme(panel.background = element_rect(fill = "#ffff99"))
 ```
 
+## Return to home page

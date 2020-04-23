@@ -201,16 +201,15 @@ $(function() {
     editor.setFontSize("16px");
     });
 
-/*    
-var target = document.getElementById('tutorial-exercise-glue-eg-output')
-var observer = new MutationObserver(function(mutations) {
-  var old = $('#tutorial-exercise-glue-eg-output > pre > code').text();   
-  $('#tutorial-exercise-glue-eg-output > pre > code').html(old.replace("FUCK","F**K"));
-});
-var config = { attributes: true, childList: true, characterData: true };
-observer.observe(target, config);
+
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
 })
-*/
 </script>
 <div id="section-lab-3" class="section level2">
 <h2>Lab 3</h2>
@@ -387,7 +386,7 @@ sample()</code></pre>
 <pre class="r"><code>nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;, &quot;LION&quot;, &quot;MOUNTAIN&quot;, &quot;POTATO&quot;)
 
 sample(nouns, size = 2)</code></pre>
-<pre><code>## [1] &quot;FLOWER&quot;   &quot;MOUNTAIN&quot;</code></pre>
+<pre><code>## [1] &quot;TREE&quot;     &quot;MOUNTAIN&quot;</code></pre>
 </div>
 </div>
 <div id="section-copy-and-paste-with-glue" class="section level3 tabset">
@@ -436,6 +435,9 @@ glue(&quot;Is it {word} o&#39;clock yet?&quot;)</code></pre>
 <h3>What are the chances?</h3>
 <p>Suppose the letters A, C, and T are in a box.</p>
 <p>If you randomly select one letter at a time, take it out of the box and don’t replace it, and use the letters to spell a word in the order you selected them, how often will you spell the word CAT?</p>
+<blockquote>
+<p>The default argument for the function <code>sample()</code> is <code>replace = FALSE</code>, which means it will automatically sample without replacement if you don’t use the <code>replace =</code> argument.</p>
+</blockquote>
 <p>Complete the missing parts of the code below to investigate!</p>
 <div id="section-give-it-a-go-3" class="section level4">
 <h4>Give it a go!</h4>
@@ -455,10 +457,7 @@ glue(&quot;I spell&quot;)</code></pre>
 word &lt;- sample(letters, size = 3) %&gt;% str_flatten()
 
 glue(&quot;I spell {word}&quot;)</code></pre>
-<pre><code>## I spell TAC</code></pre>
-<blockquote>
-<p>The default argument for the function <code>sample()</code> is <code>replace = FALSE</code>, which means it will automatically sample without replacement if you don’t use the <code>replace =</code> argument.</p>
-</blockquote>
+<pre><code>## I spell TCA</code></pre>
 </div>
 </div>
 <div id="section-drum-roll-please-a-code-version-of-the-interactive-poster" class="section level3">
@@ -533,7 +532,7 @@ image_read(url) %&gt;%
 <p>Right click on the image <strong>on the Pixabay website</strong> to get its URL (Copy image address). Then adjust the code below to view the image with code so that the image is 800 pixels wide.</p>
 <div id="section-give-it-a-go-4" class="section level4">
 <h4>Give it a go!</h4>
-<div class="tutorial-exercise" data-label="image-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="4">
+<div class="tutorial-exercise" data-label="image-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
 <pre class="text"><code>url &lt;- &quot;&quot;
 
 image_read(url) %&gt;%
@@ -612,6 +611,10 @@ image_read(url) %&gt;%
                  font = &quot;Impact&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
+</div>
+</div>
+<div id="section-return-to-home-page" class="section level2">
+<h2>Return to home page</h2>
 
 <script type="application/shiny-prerendered" data-context="server-start">
 library(learnr)
@@ -784,7 +787,6 @@ output$`tutorial-exercise-lab3challenge-output` <- renderUI({
 {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","later","lattice","learnr","lifecycle","lubridate","magick","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","png","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","selectr","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.5","3.6.3","0.5.5","1.1.0","2.0.2","1.4-1","3.6.3","1.3.4","4.3","3.6.3","1.1.0","1.4.2","0.6.25","0.8.4","0.14","0.4.1","1.0.1","0.5.0","1.3.1","0.0.2","3.3.0","1.3.1","3.6.3","3.6.3","3.6.3","0.3.0","2.2.0","0.5.3","0.4.0","1.5.1","1.5.2","1.4.1","1.6.1","1.28","1.0.0","0.20-38","0.10.1","0.2.0","1.7.4","2.3","1.5","1.1","3.6.3","0.9","0.1.6","0.5.0","3.1-144","1.4.3","2.0.3","0.1-7","1.1.0","0.3.3","2.4.1","1.0.3","1.3.1","1.3.1","0.3.0","0.4.5","2.1","1.3-2","0.11","0.3.5","1.1.0","0.4-2","1.4.0","3.6.3","1.4.6","1.4.0","2.1.3","1.0.2","1.0.0","1.3.0","3.6.3","3.6.3","0.2.3","2.1.2","0.12","1.2.2","1.8-4","2.2.1"]}]}]}
 </script>
 <!--/html_preserve-->
-</div>
 </div>
 
 </div> <!-- topics -->
