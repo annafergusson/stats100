@@ -116,6 +116,7 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
 ## Investigations
 
  - [Google eats](google_eats/)
+ - [Birthday songs](birthday_songs/)
 
 :::
 

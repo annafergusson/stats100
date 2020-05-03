@@ -1,0 +1,309 @@
+---
+title: "STATS 100 Investigations"
+output: 
+  learnr::tutorial:
+    progressive: TRUE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(glue)
+library(rvest)
+library(jsonlite)
+library(knitr)
+library(httr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+# some functions
+getMusicData <- function(chart_id){
+  week_url <- glue("https://nztop40.co.nz/chart/singles?chart={chart_id}")
+    week_page <- read_html(week_url)
+    
+    week_date <- week_page %>%
+      html_nodes("#p_calendar_heading") %>%
+      html_text() %>%
+      unique()
+    
+    single_position <- week_page %>%
+      html_nodes("td.p_this_week > p > span") %>%
+      html_text() %>%
+      str_squish() %>%
+      head(40)
+    
+    single_last_week <- week_page %>%
+      html_nodes("td.p_last_week") %>%
+      html_text() %>%
+      str_squish() %>%
+      head(40)
+    
+    single_weeks <- week_page %>%
+      html_nodes("td.p_weeks") %>%
+      html_text() %>%
+      str_squish() %>%
+      head(40)
+    
+    single_title <- week_page %>%
+      html_nodes("td.p_title_artist > p.p_title") %>%
+      html_text() %>%
+      str_squish() %>%
+      head(40)
+    
+    single_artist <- week_page %>%
+      html_nodes("td.p_title_artist > p.p_artist") %>%
+      html_text() %>%
+      str_squish() %>%
+      head(40)
+    
+    nztop40 <- tibble(single_position, 
+            single_last_week,
+            single_weeks,
+            single_title,
+            single_artist) %>%
+      mutate(week_date)
+    
+    # add info from itunes
+    track_apple_info <- map_df(1 : nrow(nztop40), function(i){
+      # wait 30 seconds
+      Sys.sleep(0.5)
+      search_artist <- nztop40$single_artist[i]
+      search_title <- nztop40$single_title[i]
+      info <- getTrackDetails(search_artist, search_title)  %>%
+        select(trackId, artistName, collectionName, trackName, releaseDate, trackTimeMillis, primaryGenreName) %>%
+        mutate(single_artist = search_artist, single_title = search_title)
+      if(nrow(info) > 0 && !is.null(info)){
+        return(info)
+    }
+  })
+    
+    nztop40 %>%
+      left_join(track_apple_info) %>%
+      mutate(single_last_week = ifelse(single_last_week == "new",
+                                       "",
+                                       single_last_week),
+             apple_track_length_mins = trackTimeMillis/60000,
+             apple_genre = fct_lump_n(primaryGenreName, 2),
+             apple_days_since_released = difftime(
+               parse_date_time(
+                 week_date, 
+                 orders="dmy"),
+               parse_date_time(
+                 releaseDate %>% 
+                   str_sub(1,10), 
+                 orders="ymd"),
+               units="days") %>% 
+               as.numeric(),
+             apple_days_since_released = ifelse(
+               apple_days_since_released < 0, 
+               0, apple_days_since_released),
+             single_title_num_words = str_count(single_title,
+                                                "\\S+"),
+             single_artist_featured = ifelse(
+               str_detect(single_artist, "feat."),
+               "yes",
+               "no"),
+             single_moved_position = ifelse(
+               single_position != single_last_week,
+               "moved chart position",
+               "same chart position or new")
+             ) %>%
+      rename(apple_id = trackId,
+             apple_artist = artistName,
+             apple_title = trackName,
+             apple_collection = collectionName,
+             apple_release_date = releaseDate,
+             chart_date = week_date) %>%
+      select(-trackTimeMillis, 
+             -primaryGenreName, 
+             chart_date,
+             starts_with("single"),
+             starts_with("apple"))
+}
+
+#a <- parse_date_time("20 April 2020", orders="dmy")
+#b <- parse_date_time("2018-11-08T08:00:00Z" %>% str_sub(1,10), orders="ymd")
+#difftime(parse_date_time(week_date, orders="dmy"),parse_date_time(releaseDate %>% str_sub(1,10), orders="ymd"),units="days") %>% as.numeric()
+
+#get info from itunes
+getTrackDetails <- function(artist, track){
+  search_artist <- artist %>% str_replace_all(" ","+")
+  # need to remove feat. Drake etc.???
+  apple_url <- glue("https://itunes.apple.com/search?term={search_artist}")
+  artist_song <- fromJSON(apple_url, flatten = TRUE)$results 
+  if(!length(artist_song %>% unlist()) == 0)
+  {
+  return(artist_song %>%
+    filter(str_detect(trackName %>% str_to_lower(), 
+                      track %>% str_to_lower() %>% str_replace_all("\\(.*\\)", "") %>% str_squish())) %>%
+    head(1))
+  }
+}
+
+# function to get data out and into iNZightLite
+iNZightLink <- function(data) {
+  json_output <- jsonlite::toJSON(data, na = "null")
+  anna_url <- "https://csv.monster/tempcsv.php"
+  response <- httr::POST(url = anna_url, body = list(t = json_output))
+  temp_csv_url <- httr::content(response, "text")
+  src <- glue("https://lite.docker.stat.auckland.ac.nz/?url={temp_csv_url}&land=visualize")
+  data.frame(link_to_iNZight_lite = glue("<a href='{src}' target = '_blank'>{src}</a>")) %>% kable()
+}
+
+```
+
+```{css}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+```
+
+```{js echo=FALSE}
+$(function() {
+  var editor;
+  $('.ace_editor').each(function( index ) {
+    editor = ace.edit(this);
+    editor.getSession().setUseWrapMode(true);
+    editor.setFontSize("16px");
+    });
+
+
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
+})
+```
+
+```{r eval=FALSE}
+parse_date("20 April 2020")
+
+release_date <- "2020-02-01T08:00:00Z" %>%
+  str_replace("T.*Z", "") %>%
+  parse_date()
+
+data <- getMusicData(chart_id = 4848)
+iNZightLink(data)
+
+
+```
+
+## Birthday songs
+
+What songs were in the NZ Top 40 music charts the week you were born? 
+
+Change the `chart id` number in the code below to match the number from the URL from the week you were born. 
+
+The `chart_id` is the number after **?chart=** in the URL `https://nztop40.co.nz/singles?chart=ID`
+
+Then run the code and explore the data about these songs using iNZight Lite!
+
+> Be patient, this code will take about 30 seconds to run!
+
+```{r getData, exercise=TRUE}
+data <- getMusicData(chart_id = 4848)
+iNZightLink(data)
+```
+
+## <a>Return to home page</a>
