@@ -24,6 +24,25 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 60)
 
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
 # some functions
 
 # using code/ideas from here https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/
@@ -278,11 +297,11 @@ If you want, you could try changing the `font` argument to something else, and i
 image_blank(width = 500, 
             height = 500, 
             color = "#999999") %>%
-image_annotate("YOU ARE A",
-               color = "#000000",
-               size = 30,
-               font = "serif",
-               gravity = "north")
+  image_annotate("YOU ARE A",
+                 color = "#000000",
+                 size = 30,
+                 font = "serif",
+                 gravity = "north")
 ```
 
 #### See a solution
@@ -291,11 +310,11 @@ image_annotate("YOU ARE A",
 image_blank(width = 500, 
             height = 500, 
             color = "#999999") %>%
-image_annotate("YOU ARE A",
-               color = "#ffffff",
-               size = 80,
-               font = "serif",
-               gravity = "north")
+  image_annotate("YOU ARE A",
+                 color = "#ffffff",
+                 size = 80,
+                 font = "serif",
+                 gravity = "north")
 ```
 
 ### Randomly selecting words {.tabset}
@@ -350,7 +369,7 @@ For example, I could make a "list" of the words to sample from.
 
 I could randomly select one of these words.
 
-`word <- sample(languages, size = 1)`
+`word <- sample(word, size = 1)`
 
 I could then print a message that combines some fixed text with whatever the random word is. See the `glue()` function in action below.
 
@@ -373,9 +392,9 @@ Try this out with the code below.
 `r emoji_image("beer-mug") %>% image_read()`
 
 ```{r glue-mum, exercise=TRUE}
-letters <- c("B", "E", "R")
+poss_letters <- c("B", "E", "R")
 
-word <- sample(letters, size = 4, replace = TRUE) %>%
+word <- sample(poss_letters, size = 4, replace = TRUE) %>%
   str_flatten()
 
 glue("Is it {word} o'clock yet?")
@@ -396,7 +415,7 @@ Complete the missing parts of the code below to investigate!
 #### Give it a go!
 
 ```{r glue-try, exercise=TRUE}
-letters <- c()
+poss_letters <- c()
 
 word <- sample() %>% str_flatten()
 
@@ -406,9 +425,9 @@ glue("I spell")
 #### See a solution
 
 ```{r glue-demo, echo=TRUE}
-letters <- c("A", "C", "T")
+poss_letters <- c("A", "C", "T")
 
-word <- sample(letters, size = 3) %>% str_flatten()
+word <- sample(poss_letters, size = 3) %>% str_flatten()
 
 glue("I spell {word}")
 ```
@@ -421,7 +440,7 @@ Below is some code that recreates the interactive poster.
 
 Then run the code a few times to see what motivational phrases are created!
 
-```{r placement, exercise=TRUE, exercise.lines=16}
+```{r placement, exercise=TRUE, exercise.lines=18}
 adjectives <- c("MAJESTIC", "CHAOTIC", "STUNNING", "FIERCE", "UNIQUE", "POWERFUL", "WHOLESOME", "FANCY")
 adjective <- sample(adjectives, 1)
 
@@ -433,11 +452,11 @@ phrase <- glue("YOU ARE A {adjective} {noun}") %>% str_wrap(10)
 image_blank(width = 500, 
             height = 500, 
             color = "#999999") %>%
-image_annotate(phrase,
-               color = "#ffffff",
-               size = 80,
-               font = "Impact",
-               gravity = "center")
+  image_annotate(phrase,
+                 color = "#ffffff",
+                 size = 80,
+                 font = "Impact",
+                 gravity = "center")
 ```
 
 > Did you spot a new function in there? The `str_wrap()` function let's us tell the computer how many characters can fit across the poster, and wraps our text to fit. 

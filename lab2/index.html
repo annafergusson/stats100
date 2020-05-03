@@ -294,7 +294,7 @@ $('.ace_editor').each(function( index ) {
 googleTranslate(fromText = lyrics, 
                 fromLanguage = &quot;EN&quot;, 
                 toLanguage = &quot;MI&quot;) %&gt;%
-  gather() %&gt;%
+  pivot_longer(everything()) %&gt;%
   kable(col.names = NULL)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
@@ -311,7 +311,7 @@ googleTranslate(fromText = lyrics,
 googleTranslate(fromText = text, 
                 fromLanguage = &quot;EN&quot;, 
                 toLanguage = &quot;MI&quot;) %&gt;%
-  gather() %&gt;%
+  pivot_longer(everything()) %&gt;%
   kable(col.names = NULL)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
@@ -323,7 +323,7 @@ googleTranslate(fromText = text,
 googleTranslate(fromText = text, 
                 fromLanguage = &quot;EN&quot;, 
                 toLanguage = &quot;FI&quot;) %&gt;%
-  gather() %&gt;%
+  pivot_longer(everything()) %&gt;%
   kable(col.names = NULL)</code></pre>
 <table>
 <tbody>
@@ -356,7 +356,7 @@ googleTranslate(fromText = text,
 googleTranslate(fromText = text, 
                 fromLanguage = &quot;EN&quot;, 
                 toLanguage = &quot;FI&quot;) %&gt;%
-  gather() %&gt;%
+  pivot_longer(everything()) %&gt;%
   kable(col.names = NULL)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
@@ -510,6 +510,25 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 60)
 
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
 # some functions
 
 googleTranslate <- function(fromText, fromLanguage, toLanguage){
@@ -570,7 +589,7 @@ output$`tutorial-exercise-lab2challenge-output` <- renderUI({
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","highr","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.5","3.6.3","0.5.5","1.1.0","2.0.2","1.4-1","3.6.3","1.3.4","4.3","3.6.3","1.1.0","1.4.2","0.6.25","0.8.4","0.3.0","0.14","0.4.1","1.0.1","0.5.0","1.3.1","0.0.2","3.3.0","1.3.1","3.6.3","3.6.3","3.6.3","0.3.0","2.2.0","0.8","0.5.3","0.4.0","1.5.1","1.5.2","1.4.1","1.6.1","1.28","1.0.0","0.20-38","0.10.1","0.2.0","1.7.4","1.5","1.1","3.6.3","0.9","0.1.6","0.5.0","3.1-144","1.4.3","2.0.3","1.1.0","0.3.3","2.4.1","1.0.3","1.3.1","1.3.1","0.3.0","0.4.5","2.1","1.3-2","0.11","0.3.5","1.1.0","1.4.0","3.6.3","1.4.6","1.4.0","2.1.3","1.0.2","1.0.0","1.3.0","3.6.3","3.6.3","0.2.3","2.1.2","0.12","1.2.2","1.8-4","2.2.1"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","highr","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.5","3.6.3","0.5.5","1.1.0","2.0.2","1.4-1","3.6.3","1.3.4","4.3","3.6.3","1.1.0","1.4.2","0.6.25","0.8.4","0.14","0.4.1","1.0.1","0.5.0","1.3.1","0.0.2","3.3.0","1.3.1","3.6.3","3.6.3","3.6.3","0.3.0","2.2.0","0.8","0.5.3","0.4.0","1.5.1","1.5.2","1.4.1","1.6.1","1.28","1.0.0","0.20-38","0.10.1","0.2.0","1.7.4","1.5","1.1","3.6.3","0.9","0.1.6","0.5.0","3.1-144","1.4.3","2.0.3","1.1.0","0.3.3","2.4.1","1.0.3","1.3.1","1.3.1","0.3.0","0.4.5","2.1","1.3-2","0.11","0.3.5","1.1.0","1.4.0","3.6.3","1.4.6","1.4.0","2.1.3","1.0.2","1.0.0","1.3.0","3.6.3","3.6.3","0.2.3","2.1.2","0.12","1.2.2","1.8-4","2.2.1"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>

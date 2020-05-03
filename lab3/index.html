@@ -332,11 +332,11 @@ image_annotate(text = &quot;TEXT HERE&quot;,
 <pre class="text"><code>image_blank(width = 500, 
             height = 500, 
             color = &quot;#999999&quot;) %&gt;%
-image_annotate(&quot;YOU ARE A&quot;,
-               color = &quot;#000000&quot;,
-               size = 30,
-               font = &quot;serif&quot;,
-               gravity = &quot;north&quot;)</code></pre>
+  image_annotate(&quot;YOU ARE A&quot;,
+                 color = &quot;#000000&quot;,
+                 size = 30,
+                 font = &quot;serif&quot;,
+                 gravity = &quot;north&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -345,11 +345,11 @@ image_annotate(&quot;YOU ARE A&quot;,
 <pre class="r"><code>image_blank(width = 500, 
             height = 500, 
             color = &quot;#999999&quot;) %&gt;%
-image_annotate(&quot;YOU ARE A&quot;,
-               color = &quot;#ffffff&quot;,
-               size = 80,
-               font = &quot;serif&quot;,
-               gravity = &quot;north&quot;)</code></pre>
+  image_annotate(&quot;YOU ARE A&quot;,
+                 color = &quot;#ffffff&quot;,
+                 size = 80,
+                 font = &quot;serif&quot;,
+                 gravity = &quot;north&quot;)</code></pre>
 <p><img src="index_files/figure-html/text-demo-1.png" width="250" /></p>
 </div>
 </div>
@@ -386,7 +386,7 @@ sample()</code></pre>
 <pre class="r"><code>nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;, &quot;LION&quot;, &quot;MOUNTAIN&quot;, &quot;POTATO&quot;)
 
 sample(nouns, size = 2)</code></pre>
-<pre><code>## [1] &quot;TREE&quot;     &quot;MOUNTAIN&quot;</code></pre>
+<pre><code>## [1] &quot;LION&quot;  &quot;EAGLE&quot;</code></pre>
 </div>
 </div>
 <div id="section-copy-and-paste-with-glue" class="section level3 tabset">
@@ -399,7 +399,7 @@ sample(nouns, size = 2)</code></pre>
 <p>For example, I could make a “list” of the words to sample from.</p>
 <p><code>words &lt;- c("cool", "awesome", "amazing")</code></p>
 <p>I could randomly select one of these words.</p>
-<p><code>word &lt;- sample(languages, size = 1)</code></p>
+<p><code>word &lt;- sample(word, size = 1)</code></p>
 <p>I could then print a message that combines some fixed text with whatever the random word is. See the <code>glue()</code> function in action below.</p>
 <div class="tutorial-exercise" data-label="glue-eg" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>words &lt;- c(&quot;cool&quot;, &quot;awesome&quot;, &quot;amazing&quot;)
@@ -419,9 +419,9 @@ glue(&quot;Statistics is {word}!&quot;)</code></pre>
 <p>Try this out with the code below.</p>
 <p><img src="index_files/figure-html/glue-eg-1.png" width="109" /></p>
 <div class="tutorial-exercise" data-label="glue-mum" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>letters &lt;- c(&quot;B&quot;, &quot;E&quot;, &quot;R&quot;)
+<pre class="text"><code>poss_letters &lt;- c(&quot;B&quot;, &quot;E&quot;, &quot;R&quot;)
 
-word &lt;- sample(letters, size = 4, replace = TRUE) %&gt;%
+word &lt;- sample(poss_letters, size = 4, replace = TRUE) %&gt;%
   str_flatten()
 
 glue(&quot;Is it {word} o&#39;clock yet?&quot;)</code></pre>
@@ -442,7 +442,7 @@ glue(&quot;Is it {word} o&#39;clock yet?&quot;)</code></pre>
 <div id="section-give-it-a-go-3" class="section level4">
 <h4>Give it a go!</h4>
 <div class="tutorial-exercise" data-label="glue-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>letters &lt;- c()
+<pre class="text"><code>poss_letters &lt;- c()
 
 word &lt;- sample() %&gt;% str_flatten()
 
@@ -452,12 +452,12 @@ glue(&quot;I spell&quot;)</code></pre>
 </div>
 <div id="section-see-a-solution-3" class="section level4">
 <h4>See a solution</h4>
-<pre class="r"><code>letters &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;T&quot;)
+<pre class="r"><code>poss_letters &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;T&quot;)
 
-word &lt;- sample(letters, size = 3) %&gt;% str_flatten()
+word &lt;- sample(poss_letters, size = 3) %&gt;% str_flatten()
 
 glue(&quot;I spell {word}&quot;)</code></pre>
-<pre><code>## I spell TCA</code></pre>
+<pre><code>## I spell ACT</code></pre>
 </div>
 </div>
 <div id="section-drum-roll-please-a-code-version-of-the-interactive-poster" class="section level3">
@@ -467,7 +467,7 @@ glue(&quot;I spell {word}&quot;)</code></pre>
 <p>Take a look at each line of code and check if you kind of understand what each part the code does.</p>
 </blockquote>
 <p>Then run the code a few times to see what motivational phrases are created!</p>
-<div class="tutorial-exercise" data-label="placement" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="16">
+<div class="tutorial-exercise" data-label="placement" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="18">
 <pre class="text"><code>adjectives &lt;- c(&quot;MAJESTIC&quot;, &quot;CHAOTIC&quot;, &quot;STUNNING&quot;, &quot;FIERCE&quot;, &quot;UNIQUE&quot;, &quot;POWERFUL&quot;, &quot;WHOLESOME&quot;, &quot;FANCY&quot;)
 adjective &lt;- sample(adjectives, 1)
 
@@ -479,11 +479,11 @@ phrase &lt;- glue(&quot;YOU ARE A {adjective} {noun}&quot;) %&gt;% str_wrap(10)
 image_blank(width = 500, 
             height = 500, 
             color = &quot;#999999&quot;) %&gt;%
-image_annotate(phrase,
-               color = &quot;#ffffff&quot;,
-               size = 80,
-               font = &quot;Impact&quot;,
-               gravity = &quot;center&quot;)</code></pre>
+  image_annotate(phrase,
+                 color = &quot;#ffffff&quot;,
+                 size = 80,
+                 font = &quot;Impact&quot;,
+                 gravity = &quot;center&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
 </div>
 <blockquote>
@@ -631,6 +631,25 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE, 
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 60)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
 
 # some functions
 
