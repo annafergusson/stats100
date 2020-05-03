@@ -96,19 +96,26 @@ getMusicData <- function(chart_id){
       Sys.sleep(0.5)
       search_artist <- nztop40$single_artist[i]
       search_title <- nztop40$single_title[i]
-      info <- getTrackDetails(search_artist, search_title)  %>%
-        select(trackId, artistName, collectionName, trackName, releaseDate, trackTimeMillis, primaryGenreName) %>%
-        mutate(single_artist = search_artist, single_title = search_title)
-      if(nrow(info) > 0 && !is.null(info)){
-        return(info)
-    }
+      track_info <- getTrackDetails(search_artist, search_title)
+      
+      if(!is.null(track_info)){
+        info <- track_info %>%
+          select(trackId, artistName, collectionName, trackName, releaseDate, trackTimeMillis, primaryGenreName) %>%
+          mutate(single_artist = search_artist, 
+                 single_title = search_title)
+        
+        if(nrow(info) > 0 && !is.null(info)){
+          return(info)
+        }
+        
+      }
   })
     
     nztop40 %>%
       left_join(track_apple_info) %>%
-      mutate(single_last_week = ifelse(single_last_week == "new",
-                                       "",
-                                       single_last_week),
+      mutate(single_last_week = ifelse(str_detect(single_last_week, "new|re-entry"),
+                                   "",
+                                   single_last_week),
              apple_track_length_mins = trackTimeMillis/60000,
              apple_genre = fct_lump_n(primaryGenreName, 2),
              apple_days_since_released = difftime(
@@ -160,10 +167,10 @@ getTrackDetails <- function(artist, track){
   artist_song <- fromJSON(apple_url, flatten = TRUE)$results 
   if(!length(artist_song %>% unlist()) == 0)
   {
-  return(artist_song %>%
-    filter(str_detect(trackName %>% str_to_lower(), 
-                      track %>% str_to_lower() %>% str_replace_all("\\(.*\\)", "") %>% str_squish())) %>%
-    head(1))
+   return(artist_song %>%
+             filter(str_detect(trackName %>% str_to_lower() %>% str_replace_all("[^[:alnum:]]", ""), 
+                               track %>% str_to_lower() %>% str_replace_all("[^[:alnum:]]", "") %>% str_replace_all("\\(.*\\)", "") %>% str_squish())) %>%
+             head(1))
   }
 }
 
