@@ -140,7 +140,7 @@ getMusicData <- function(chart_id){
              single_moved_position = ifelse(
                single_position != single_last_week,
                "moved chart position",
-               "same chart position or new")
+               "same chart position")
              ) %>%
       rename(apple_id = trackId,
              apple_artist = artistName,
