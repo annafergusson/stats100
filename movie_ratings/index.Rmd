@@ -1,0 +1,287 @@
+---
+title: "STATS 100 Investigations"
+output: 
+  learnr::tutorial:
+    progressive: FALSE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(glue)
+library(rvest)
+library(jsonlite)
+library(knitr)
+library(httr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+getMovieData <- function(keyword, password, data_mode){
+  # get API key
+  url <- glue("https://script.google.com/macros/s/AKfycbynYqGYeHLNDjcltlU5jGHx1ZPWWvqbelq61tj8eAaZC71ByTA/exec?password={password}")
+  response <- httr::GET(url = url)
+  api_key <- httr::content(response, "text")
+  if(api_key != "")
+  {
+    if(data_mode == "testing")
+    {
+      pages <- c(2,4,6,8,10)
+          return(searchMovieData(keyword, api_key, pages))
+    }
+     if(data_mode == "training")
+    {
+      pages <- c(1,3,5,7,9)
+          return(searchMovieData(keyword, api_key, pages))
+    }
+  }
+  else
+  {
+    return()
+  }
+}
+
+testModel <- function(data, a, b, error){
+    if(nrow(data) > 0)
+    {
+      points_plotted <- data %>%
+        filter(!Metascore == "N/A") %>%
+        nrow()
+
+      data %>%
+        filter(!is.na(Metascore), 
+               !is.na(imdbRating)) %>%
+        mutate(Metascore = Metascore %>% as.numeric(),
+               imdbRating = imdbRating %>% as.numeric()) %>%
+        ggplot(aes(x = imdbRating, 
+                   y = Metascore)) + 
+        geom_point(alpha = 0.5) + 
+        geom_abline(intercept = a, 
+                    slope = b) +  
+        geom_ribbon(aes(ymin = a + b*imdbRating - error, 
+                        ymax = a + b*imdbRating  + error), 
+                    fill = "#f1c232", 
+                    alpha = 0.5) + 
+        annotate("text", -Inf, Inf, 
+                 label = paste0("n =",
+                                points_plotted), 
+                 hjust = 0, 
+                 vjust = 1)  +
+theme_minimal()
+    }
+}
+
+searchMovieData <- function(keyword, api_key, pages){
+  keyword <- keyword %>% str_trim() %>% str_replace_all(" ","+")
+  url <- glue("http://www.omdbapi.com/?s={keyword}&type=movie&apikey={api_key}")
+  results <- fromJSON(url)
+  numResults <- results$totalResults %>% as.numeric()
+  if(numResults < 100){
+    return()
+  }
+  else
+  {
+    
+    # get all the IDs to look up
+    search_data <- map_df(1 : length(pages), function(i){
+      page_num <- pages[i]
+      url <- glue("http://www.omdbapi.com/?s={keyword}&type=movie&apikey={api_key}&page={page_num}")
+      results <- fromJSON(url)
+      results$Search
+    })
+    
+    # look up each movie
+    movie_ids <- search_data$imdbID
+    movie_data <- map_df(1 : length(movie_ids), function(i){
+        id <- movie_ids[i]
+        url <- glue("http://www.omdbapi.com/?i={id}&apikey={api_key}")
+        response <- fromJSON(url)
+        tibble(Title = response$Title,
+               Year = response$Year,
+               Metascore = response$Metascore,
+               imdbRating = response$imdbRating)
+    })
+    return(movie_data)
+  }
+}
+
+# function to get data out and into iNZightLite
+iNZightLink <- function(data) {
+  json_output <- jsonlite::toJSON(data, na = "null")
+  anna_url <- "https://csv.monster/tempcsv.php"
+  response <- httr::POST(url = anna_url, body = list(t = json_output))
+  temp_csv_url <- httr::content(response, "text")
+  src <- glue("https://lite.docker.stat.auckland.ac.nz/?url={temp_csv_url}&land=visualize")
+  data.frame(link_to_iNZight_lite = glue("<a href='{src}' target = '_blank'>{src}</a>")) %>% kable()
+}
+
+```
+
+```{css}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+```
+
+```{js echo=FALSE}
+$(function() {
+  var editor;
+  $('.ace_editor').each(function( index ) {
+    editor = ace.edit(this);
+    editor.getSession().setUseWrapMode(true);
+    editor.setFontSize("16px");
+    });
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
+})
+```
+
+## Movie ratings
+
+Can we use a movie's metascore to predict its IMDb rating? 
+
+We'll use data sourced from the <a href="http://www.omdbapi.com/" target="blank">OMDb API</a> to investigate.
+
+### Training the model
+
+ + Change the keyword to your keyword, and enter the password between the "". 
+ + Then run the code and click the link generated to explore the data using iNZight Lite.
+
+> This code will take a while to run!
+
+```{r trainModel, exercise=TRUE}
+# get training data
+keyword <- "cat"
+password <- ""
+data_mode <- "training"
+data <- getMovieData(keyword, password, data_mode)
+
+# visualise & model
+iNZightLink(data)
+```
+
+### Testing the model
+
+ + Change the keyword to your keyword, and enter the password between the "". 
+ + Change the model parameters to your values!
+ + Then run the code to see how well your model performs on new data!
+
+> This code will take a while to run!
+
+```{r testModel, exercise=TRUE}
+# get testing data
+keyword <- "cat"
+password <- ""
+data_mode <- "testing"
+data <- getMovieData(keyword, password, data_mode)
+
+# test model
+a <- 0
+b <- 0
+error <- 0
+testModel(data, a, b, error)
+```
+
+## <a>Return to home page</a>
