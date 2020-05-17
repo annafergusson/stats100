@@ -279,10 +279,10 @@ getSongs <- function(artist_name, password, k = 0){
   api_key <- httr::content(response, "text")
   if(api_key != ""){
       api_info <- api_key %>% str_split(",")
-      Sys.setenv(SPOTIFY_CLIENT_ID = api_info[[1]][1])
-      Sys.setenv(SPOTIFY_CLIENT_SECRET = api_info[[1]][2])
-      access_token <- get_spotify_access_token()
-      songs <- get_artist_audio_features(artist_name)
+      SPOTIFY_CLIENT_ID <- api_info[[1]][1]
+      SPOTIFY_CLIENT_SECRET <- api_info[[1]][2]
+      access_token <- get_spotify_access_token(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)
+      songs <- get_artist_audio_features(artist_name, authorization = access_token)
       songs_tidy <- songs %>%
         mutate(mode_num = ifelse(mode_name == "minor", 0, 1)) %>%
         group_by(artist_name, 
