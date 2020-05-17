@@ -1,0 +1,271 @@
+---
+title: "STATS 100 Investigations"
+output: 
+  learnr::tutorial:
+    progressive: FALSE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(stringr)
+library(glue)
+library(knitr)
+library(httr)
+library(spotifyr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+# clustering function to reuse
+getSongs <- function(artist_name, password, k = 0){
+ url <- glue("https://script.google.com/a/aucklanduni.ac.nz/macros/s/AKfycbz4Qme0IZxDn6i_ezuq0DQ-azy0CH3vdPfXs9Ll/exec?password={password}")
+  response <- httr::GET(url = url)
+  api_key <- httr::content(response, "text")
+  if(api_key != ""){
+      api_info <- api_key %>% str_split(",")
+      Sys.setenv(SPOTIFY_CLIENT_ID = api_info[[1]][1])
+      Sys.setenv(SPOTIFY_CLIENT_SECRET = api_info[[1]][2])
+      access_token <- get_spotify_access_token()
+      songs <- get_artist_audio_features(artist_name)
+      songs_tidy <- songs %>%
+        mutate(mode_num = ifelse(mode_name == "minor", 0, 1)) %>%
+        group_by(artist_name, 
+                 str_to_lower(track_name)) %>%
+        summarise(energy = max(energy),
+                valence = max(valence),
+                mode_num = mean(mode_num) %>% round(),
+                track_uri = first(track_uri),
+                album_name = first(album_name)) %>%
+        mutate(mode_name = ifelse(mode_num == 1, "major", "minor")) %>%
+        select(-mode_num) %>%
+        rename(track_name = `str_to_lower(track_name)`)
+
+      songs_features <- songs_tidy %>%
+        ungroup() %>%
+        select(energy, valence)
+
+      # cluster time!
+      set.seed(2020)
+      if(k == 0)
+      {
+        for(i in 2 : round(nrow(songs_tidy)/5)){
+                num_clust <- i
+                songs_km <- kmeans(songs_features, 
+                           centers = num_clust) 
+                new_var <- glue("cluster_k_{i}")
+                songs_tidy[[new_var]] <- as.factor(songs_km$cluster %>% paste("cluster", .))
+        }
+      }
+      else
+      {
+        num_clust <- k
+        songs_km <- kmeans(songs_features, 
+                           centers = num_clust) 
+        songs_tidy$cluster <- as.factor(songs_km$cluster)
+      }
+      return(songs_tidy)
+    }
+    else
+    {
+      stop("That password is not correct")
+    } 
+}
+
+# function to get song data
+getSongData <- function(artist_name, password){
+  if(password == ""){
+    stop("Did you forget to enter the password?")
+  }
+  else
+  {
+    getSongs(artist_name, password)
+  }
+}
+
+# function to return two songs for each cluster, using spotify web player embedded iframes
+getSongClusters <- function(artist_name, password, k){
+  if(password == ""){
+    stop("Did you forget to enter the password?")
+  }
+  else
+  {
+    if(k < 2)
+    {
+       stop("You need to provide a value for k that is at least 2 (e.g. at least 2 clusters/groups)")
+    }
+    else
+    {
+      cluster_songs <- getSongs(artist_name, password, k)
+      # try one for now
+      track_data <- cluster_songs %>%
+        mutate(iframe_src = str_replace_all(track_uri, "spotify:track:","")) %>%
+        arrange(cluster) %>%
+        mutate(player = paste0("<iframe src='https://open.spotify.com/embed/track/", iframe_src, "' width='500' height='100' frameborder='0' allowtransparency='true' allow='encrypted-media'></iframe>")) %>%
+        select(track_name, cluster, player) %>%
+        group_by(cluster) %>% 
+        sample_n(min(3, n()))
+    
+      track_data %>% kable()
+    }
+  }
+}
+
+######  SHOW THE PLAYER FOR THE TRACKS
+#<iframe src="https://open.spotify.com/embed/track/4aebBr4JAihzJQR0CiIZJv" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+######
+
+# function to get data out and into iNZightLite
+iNZightLink <- function(data) {
+  json_output <- jsonlite::toJSON(data, na = "null")
+  anna_url <- "https://csv.monster/tempcsv.php"
+  response <- httr::POST(url = anna_url, body = list(t = json_output))
+  temp_csv_url <- httr::content(response, "text")
+  src <- glue("https://lite.docker.stat.auckland.ac.nz/?url={temp_csv_url}&land=visualize")
+  data.frame(link_to_iNZight_lite = glue("<a href='{src}' target = '_blank'>{src}</a>")) %>% kable()
+}
+
+```
+
+```{css}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+```
+
+```{js echo=FALSE}
+$(function() {
+  var editor;
+  $('.ace_editor').each(function( index ) {
+    editor = ace.edit(this);
+    editor.getSession().setUseWrapMode(true);
+    editor.setFontSize("16px");
+    });
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
+})
+```
+
+## Song sorter
+
+Can we sort songs from an artist into similar sounding songs based on two measures: energy and valence? 
+
+We'll use data sourced from the <a href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/" target="blank">Spotify API</a> to investigate using *k-means clustering*.
+
+### Exploring the data and possible clusters
+
+ + Change the artist name to your artist, and **enter the password between the ""**. 
+ + Then run the code and click the link generated to explore the data using iNZight Lite.
+
+> This code will take a while to run!
+
+```{r trainModel, exercise=TRUE}
+# get song data based on artist
+artist_name <- "adele"
+password <- ""
+
+data <- getSongData(artist_name, password)
+
+# visualise & model
+iNZightLink(data)
+```
+
+### But do the songs sound similar?
+
+ + Change the artist name to your artist, and enter the password between the "". 
+ + Enter the number of clusters you decided on for your songs (k)
+ + Then run the code and listen to a random selection of up to three of the songs from each of these clusters
+ 
+> This code will take a while to run!
+ 
+```{r testModel, exercise=TRUE, exercise.lines = 7}
+# get song cluster data based on artist and k
+artist_name <- "adele"
+password <- ""
+k <- 0
+
+getSongClusters(artist_name, password, k)
+```
+
+## <a>Return to home page</a>
