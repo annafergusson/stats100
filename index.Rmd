@@ -105,8 +105,8 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
  - [Lab 1](lab1/) 
  - [Lab 2](lab2/) 
  - [Lab 3](lab3/) 
- - Lab 4 
- - Lab 5 
+ - [Lab 4](lab4/) 
+ - [Lab 5](lab5/) 
  - Lab 6
 
 :::
@@ -118,6 +118,7 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
  - [Google eats](google_eats/)
  - [Birthday songs](birthday_songs/)
  - [Movie ratings](movie_ratings/)
+ - [Song sorter](song_sorter/)
 
 :::
 
