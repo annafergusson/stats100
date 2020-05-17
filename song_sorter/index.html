@@ -301,11 +301,12 @@ getSongs <- function(artist_name, password, k = 0){
         select(energy, valence)
 
       # cluster time!
-      set.seed(2020)
+      
       if(k == 0)
       {
         for(i in 2 : round(nrow(songs_tidy)/5)){
                 num_clust <- i
+                set.seed(2020)
                 songs_km <- kmeans(songs_features, 
                            centers = num_clust) 
                 new_var <- glue("cluster_k_{i}")
@@ -315,6 +316,7 @@ getSongs <- function(artist_name, password, k = 0){
       else
       {
         num_clust <- k
+        set.seed(2020)
         songs_km <- kmeans(songs_features, 
                            centers = num_clust) 
         songs_tidy$cluster <- as.factor(songs_km$cluster)
