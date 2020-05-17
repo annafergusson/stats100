@@ -24,24 +24,6 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 60)
 
-# I think the stuff below means the previous code is not cached but ???
-options(tutorial.storage = list(
-  # save an arbitrary R object "data" to storage
-   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
-  # retreive a single R object from storage
-  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
-    NULL 
-  },
-  
-  # retreive a list of all R objects stored
-  get_objects = function(tutorial_id, tutorial_version, user_id) { 
-    list() 
-  },
-  
-  # remove all stored R objects
-  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
-  }
-))
 
 # some functions
 
@@ -562,9 +544,9 @@ Your challenge is to create your own random meme generator.
 
  + Use an image of your choice as the background
  + Generate a random phrase and annotate the image with this phrase
- + Make one other feature of your meme random e.g. color, size, gravity, font, image
+ + **Make one other feature of your meme random e.g. color, size, gravity, font, image**
 
-The code below will get you started but you will need to add to it. <mark>Remember, you can scroll back up the page to see examples of how to make the changes!</mark>
+The code below will get you started but **you will need to add to it*.** <mark>Remember, you can scroll back up the page to see examples of how to make the changes!</mark>
 
 > You will need to take screenshots of **the code you used** and **three examples of the memes generated**, and include these in your submission for this lab.
 
