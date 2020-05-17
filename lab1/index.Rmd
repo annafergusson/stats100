@@ -24,25 +24,6 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 60)
 
-# I think the stuff below means the previous code is not cached but ???
-options(tutorial.storage = list(
-  # save an arbitrary R object "data" to storage
-   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
-  # retreive a single R object from storage
-  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
-    NULL 
-  },
-  
-  # retreive a list of all R objects stored
-  get_objects = function(tutorial_id, tutorial_version, user_id) { 
-    list() 
-  },
-  
-  # remove all stored R objects
-  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
-  }
-))
-
 # some functions
 # using code/ideas from here https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/
 emoji_image <- function(x) {
@@ -157,9 +138,9 @@ $('.ace_editor').each(function( index ) {
 
 ### Creating informative time series plots
 
-In this lab, you will learn how to make informative time series plots using the [programming language R](https://www.theta.co.nz/news-blogs/tech-blog/what-is-r/) and [Google Trends](https://trends.google.com/trends/) data.
+In this lab, you will learn how to make informative time series plots using the <a href="https://www.theta.co.nz/news-blogs/tech-blog/what-is-r/" target="blank">programming language R</a> and <a href="https://trends.google.com/trends/" target="blank">Google Trends</a> data.
 
-> The recommended start date for this lab is **Week 3**, as you'll use statistical and computational ideas covered in Topic 1A (Week 1).
+> The recommended start date for this lab is **Week 3**, as you'll use statistical and computational ideas covered in Topic 1A (Week 1)
 
 ### Google eats?
 
@@ -169,27 +150,21 @@ Watch this short video about how you can use Google to find recipes for differen
 
 ### How do Google search trends compare between different countries?
 
-We can use data from [Google Trends](https://trends.google.com/trends/) to explore when people googled for different food items. 
+We can use data from <a href="https://trends.google.com/trends/" target="blank">Google Trends</a> to explore when people googled for different food items. 
 
 Below is a plot embedded from Google Trends, showing search interest **within NZ** for tomatoes across the last five years. It's interactive, so you can move your mouse/cursor over the graph and read information about each data point.
 
-<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/2051_RC11/embed_loader.js"></script> <script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"tomato","geo":"NZ","time":"today 5-y"}],"category":0,"property":""}, {"exploreQuery":"date=today%205-y&geo=US&q=tomato","guestPath":"https://trends.google.com:443/trends/embed/"}); </script> 
+<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/2213_RC01/embed_loader.js"></script> 
 
-<br />
+<script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"tomato","geo":"NZ","time":"today 5-y"}],"category":0,"property":""}, {"exploreQuery":"date=today%205-y&geo=NZ&q=tomato","guestPath":"https://trends.google.com:443/trends/embed/"}); </script> 
 
-And here is another plot, showing search interest **within the US** for tomatoes across the last five years.
+The plot show seasonality (a repeating pattern, in this case one that repeats every 12 months), where search interest for tomatoes in NZ peaks around the start of each year (our summer).
 
-<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/2051_RC11/embed_loader.js"></script> <script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"tomato","geo":"US","time":"today 5-y"}],"category":0,"property":""}, {"exploreQuery":"date=today%205-y&geo=US&q=tomato","guestPath":"https://trends.google.com:443/trends/embed/"}); </script> 
-
-<br />
-
-Both of these plots show seasonality (a repeating pattern, in this case one that repeats every 12 months), but search interest for tomatoes in NZ peaks around the start of each year (our summer) whereas search interest for tomatoes in US peaks around the middle of each year (their summer).
-
-### Can we recreate and combine these plots with code?
+### Can we recreate this plot with code?
 
 We can get the Google Trends data about different search words using a R package called `{gtrendsR}`. A package is a collection of R code functions that someone else has written that we can use to do awesome things!
 
-> Run the code below. Then change the geo (country) from "NZ" to "US", and run the code again. **Check each plot produced looks similar to the ones embedded above (scroll up to compare).**
+> Run the code below. Then change the geo (country) from "NZ" to "US", and run the code again.
 
 ```{r lab1plot, exercise = TRUE}
 data <- gtrends(keyword = "tomato",
@@ -251,11 +226,11 @@ Now we can compare the seasonality better, and also learn that for some reason, 
 
 What if we want to get the search interest for tomatoes for other countries? What are their codes?
 
-You can figure this out by paying attention to the URL (the web address) and noticing what changes in the URL when you change the country in [Google Trends](https://trends.google.com/trends/?geo=US).
+You can figure this out by paying attention to the URL (the web address) and noticing what changes in the URL when you change the country in <a href="https://trends.google.com/trends/?geo=US" target="blank">Google Trend</a>.
 
 ![](images/google_country_codes.gif){style="width:100%"}
 
-You can also find a searchable list of all the two-letter country codes on the [ISO website](https://www.iso.org/obp/ui/#search).
+You can also find a searchable list of all the two-letter country codes on the <a href="https://www.iso.org/obp/ui/#search" target="blank">ISO website</a>.
 
 > Adjust the code below to compare search interest for tomatoes between NZ and another country (not the US) and then run the code.
 
@@ -405,7 +380,7 @@ trend_data %>%
 
 ### Colour my world!
 
-We will just cover a little bit about colour in this lab, and mostly let the theme we're using for out plots to allocate colours for us. One of the ways we can define a colour is by using a hex code. A hex code starts with a `#` and is followed by a combination of six letters or numbers e.g. `#d3d3d3`. There's lots of tools online to help you choose colours and get their hex codes - [try this one out](https://www.w3schools.com/colors/colors_picker.asp){target='blank'}. 
+We will just cover a little bit about colour in this lab, and mostly let the theme we're using for out plots to allocate colours for us. One of the ways we can define a colour is by using a hex code. A hex code starts with a `#` and is followed by a combination of six letters or numbers e.g. `#d3d3d3`. There's lots of tools online to help you choose colours and get their hex codes - <a href="https://www.w3schools.com/colors/colors_picker.asp" target="blank">try this one out</a>. 
 
 > Run the code below. Then find a background colour you like, and then change the hex code below to change the background colour of the plot. I've chosen a lemon colour below to match the keyword lemon!
 
