@@ -313,7 +313,8 @@ getSongs <- function(artist_name, password, k){
                 songs_km <- kmeans(songs_features, 
                            centers = num_clust) 
                 new_var <- glue("cluster_k_{i}")
-                songs_tidy[[new_var]] <-  songs_km$cluster
+                #songs_tidy[[new_var]] <-  songs_km$cluster
+                songs_tidy[new_var] <-  songs_km$cluster
         }
       }
       else
@@ -342,6 +343,7 @@ getSongData <- function(artist_name, password){
     getSongs(artist_name, password, 0)
   }
 }
+
 
 # function to return two songs for each cluster, using spotify web player embedded iframes
 getSongClusters <- function(artist_name, password, k){
