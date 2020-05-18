@@ -307,15 +307,27 @@ getSongs <- function(artist_name, password, k){
       # cluster time!
       if(k == 0)
       {
-        for(i in 2 : max(3, round(nrow(songs_tidy)/5))){
-                num_clust <- i
-                set.seed(2020)
-                songs_km <- kmeans(songs_features, 
-                           centers = num_clust) 
-                new_var <- glue("cluster_k_{i}")
-                #songs_tidy[[new_var]] <-  songs_km$cluster
-                songs_tidy[new_var] <-  songs_km$cluster
-        }
+        # took out loop and just create each cluster manually
+        set.seed(2020)
+        songs_km_2 <- kmeans(songs_features, 
+                           centers = 2) 
+        songs_tidy$cluster_k_2 <- as.factor(songs_km_2$cluster)
+        
+        songs_km_3 <- kmeans(songs_features, 
+                           centers = 3) 
+        songs_tidy$cluster_k_3 <- as.factor(songs_km_3$cluster)
+        
+        songs_km_4 <- kmeans(songs_features, 
+                           centers = 4) 
+        songs_tidy$cluster_k_4 <- as.factor(songs_km_4$cluster)
+        
+        songs_km_5 <- kmeans(songs_features, 
+                           centers = 5) 
+        songs_tidy$cluster_k_5 <- as.factor(songs_km_5$cluster)
+        
+        songs_km_6 <- kmeans(songs_features, 
+                           centers = 6) 
+        songs_tidy$cluster_k_6 <- as.factor(songs_km_6$cluster)
       }
       else
       {
