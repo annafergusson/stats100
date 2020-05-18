@@ -273,7 +273,7 @@ knitr::opts_chunk$set(echo = FALSE,
 tutorial_options(exercise.timelimit = 90)
 
 # clustering function to reuse
-getSongs <- function(artist_name, password, k = 0){
+getSongs <- function(artist_name, password, k){
  url <- glue("https://script.google.com/a/aucklanduni.ac.nz/macros/s/AKfycbz4Qme0IZxDn6i_ezuq0DQ-azy0CH3vdPfXs9Ll/exec?password={password}")
   response <- httr::GET(url = url)
   api_key <- httr::content(response, "text")
@@ -282,9 +282,12 @@ getSongs <- function(artist_name, password, k = 0){
       SPOTIFY_CLIENT_ID <- api_info[[1]][1]
       SPOTIFY_CLIENT_SECRET <- api_info[[1]][2]
       access_token <- get_spotify_access_token(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET)
+
       songs <- get_artist_audio_features(artist_name, authorization = access_token)
+      
       songs_tidy <- songs %>%
-        mutate(mode_num = ifelse(mode_name == "minor", 0, 1)) %>%
+        mutate(mode_num = ifelse(mode_name == "minor", 
+                                 0, 1)) %>%
         group_by(artist_name, 
                  str_to_lower(track_name)) %>%
         summarise(energy = max(energy),
@@ -292,7 +295,8 @@ getSongs <- function(artist_name, password, k = 0){
                 mode_num = mean(mode_num) %>% round(),
                 track_uri = first(track_uri),
                 album_name = first(album_name)) %>%
-        mutate(mode_name = ifelse(mode_num == 1, "major", "minor")) %>%
+        mutate(mode_name = ifelse(mode_num == 1, 
+                                  "major", "minor")) %>%
         select(-mode_num) %>%
         rename(track_name = `str_to_lower(track_name)`)
 
@@ -301,16 +305,15 @@ getSongs <- function(artist_name, password, k = 0){
         select(energy, valence)
 
       # cluster time!
-      
       if(k == 0)
       {
-        for(i in 2 : round(nrow(songs_tidy)/5)){
+        for(i in 2 : max(3, round(nrow(songs_tidy)/5))){
                 num_clust <- i
                 set.seed(2020)
                 songs_km <- kmeans(songs_features, 
                            centers = num_clust) 
                 new_var <- glue("cluster_k_{i}")
-                songs_tidy[[new_var]] <- as.factor(songs_km$cluster %>% paste("cluster", .))
+                songs_tidy[[new_var]] <-  songs_km$cluster
         }
       }
       else
@@ -336,7 +339,7 @@ getSongData <- function(artist_name, password){
   }
   else
   {
-    getSongs(artist_name, password)
+    getSongs(artist_name, password, 0)
   }
 }
 
