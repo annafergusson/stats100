@@ -63,18 +63,22 @@ getSongs <- function(artist_name, password, k){
                            centers = 2) 
         songs_tidy$cluster_k_2 <- as.factor(songs_km_2$cluster)
         
+        set.seed(2020)
         songs_km_3 <- kmeans(songs_features, 
                            centers = 3) 
         songs_tidy$cluster_k_3 <- as.factor(songs_km_3$cluster)
         
+        set.seed(2020)
         songs_km_4 <- kmeans(songs_features, 
                            centers = 4) 
         songs_tidy$cluster_k_4 <- as.factor(songs_km_4$cluster)
         
+        set.seed(2020)
         songs_km_5 <- kmeans(songs_features, 
                            centers = 5) 
         songs_tidy$cluster_k_5 <- as.factor(songs_km_5$cluster)
         
+        set.seed(2020)
         songs_km_6 <- kmeans(songs_features, 
                            centers = 6) 
         songs_tidy$cluster_k_6 <- as.factor(songs_km_6$cluster)
