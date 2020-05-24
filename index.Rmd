@@ -107,7 +107,7 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
  - [Lab 3](lab3/) 
  - [Lab 4](lab4/) 
  - [Lab 5](lab5/) 
- - Lab 6
+ - [Lab 6](lab6/)
 
 :::
 
