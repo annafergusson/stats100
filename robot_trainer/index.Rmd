@@ -174,7 +174,7 @@ $(function() {
 
 ## How to train your robot!
 
-![](images/training.PNG){style="width:400px"}
+![](images/training.png){style="width:400px"}
 
 In Topic 3B we used supervised machine learning approaches to develop prediction models. In particular, we used linear regression to fit a line to data.
 
@@ -190,7 +190,7 @@ To explore some of the key ideas of supervised machine learning algorithms, we'l
 
 For the Tutorial 2B task, you explored building a prediction model using movie ratings. The key words you used to obtain data for training and testing are shown below:
 
-![](images/movies.PNG){style="width:400px"}
+![](images/movies.png){style="width:400px"}
 
 I created a training data set using two movies for each key word, and a testing data set using one movie for each key word. I made sure for both training and testing data sets that I had movies which had both an `imdbRating` and a `Metascore`.
 
@@ -206,7 +206,7 @@ That's why we have training data that has the answers (labels) to our question (
 
 For this task, our goal is to build a model that **predicts the metascore** of a movie. 
 
-![](images/untrained_robot.PNG){style="width:400px"}
+![](images/untrained_robot.png){style="width:400px"}
 
 We will tell our robot what to do through code. So that our robot can **learn**, we need some sort of score to measure their performance.
 
@@ -361,7 +361,7 @@ training_data %>%
 
 Turns out, none of the `Metascore` values are below `r min(training_data$Metascore)`, and the mean `Metascore` is `r mean(training_data$Metascore) %>% round()`. Our robot can learn from this to do a better job of predicting!
 
-![](images/learning.PNG){style="width:400px"}
+![](images/learning.png){style="width:400px"}
 
 ### The simplest regression model!
 

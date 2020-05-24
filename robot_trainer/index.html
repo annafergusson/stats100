@@ -240,7 +240,7 @@ $(function() {
 <div id="section-so-lets-start-with-an-untrained-robot-then" class="section level3">
 <h3>So let’s start with an untrained robot then!</h3>
 <p>For this task, our goal is to build a model that <strong>predicts the metascore</strong> of a movie.</p>
-<p><img src="images/untrained_robot.PNG" style="width:400px" /></p>
+<p><img src="images/untrained_robot.png" style="width:400px" /></p>
 <p>We will tell our robot what to do through code. So that our robot can <strong>learn</strong>, we need some sort of score to measure their performance.</p>
 <blockquote>
 <p>In the code below, we only tell the robot the metascores are between 0 and 100. That’s it! The robot then just guesses a <code>Metascore</code> between these two numbers. Run the code a few times and see how well the robot performs!</p>
@@ -398,6 +398,10 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE, 
                       warning = FALSE)
 tutorial_options(exercise.timelimit = 90)
+
+##########################################
+# This needs so much work for next year!
+#########################################
 
 # clustering function to reuse
 set.seed(2020)
