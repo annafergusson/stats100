@@ -119,6 +119,7 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
  - [Birthday songs](birthday_songs/)
  - [Movie ratings](movie_ratings/)
  - [Song sorter](song_sorter/)
+ - [Robot trainer](robot_trainer/)
 
 :::
 
