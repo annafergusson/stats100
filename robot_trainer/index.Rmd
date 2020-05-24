@@ -1,0 +1,517 @@
+---
+title: "STATS 100 Investigations"
+output: 
+  learnr::tutorial:
+    progressive: TRUE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(stringr)
+library(glue)
+library(knitr)
+library(magick)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+##########################################
+# This needs so much work for next year!
+#########################################
+
+# clustering function to reuse
+set.seed(2020)
+training_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTpMFo--EgQlmABk_H6Kqlbb_ENl2uGtSDClzTLwj_-GmkG2lkTnxAWtkxG0_mWaveqH656DaWgSMzK/pub?gid=0&single=true&output=csv") %>%
+  sample_frac(1) %>%
+  mutate(movie_num = row_number())
+
+checkModel <- function(training_data, slope){
+  mean_metascore <- mean(training_data$Metascore)
+  mean_imdbRating <- mean(training_data$imdbRating)
+  
+  intercept <- ((-1 * slope * mean_imdbRating) + mean_metascore) %>% round()
+  
+  predicted_metascore <- intercept + slope*training_data$imdbRating
+  
+  training_data$predictedMetascore <- predicted_metascore
+  
+  training_data <- training_data %>%
+     rowwise() %>%
+    mutate(error = abs(Metascore - predictedMetascore),
+         error_pos = max(Metascore, predictedMetascore) + 5,
+         error_squared = (Metascore - predictedMetascore)^2)
+  
+  RMSE <- mean(training_data$error_squared) %>% 
+    sqrt() %>% round(1)
+  
+  training_data %>%
+    ggplot() +
+    geom_segment(aes(x = imdbRating, 
+                     y = Metascore, 
+                     xend = imdbRating, 
+                     yend = predictedMetascore),
+                 colour = "red",
+                 size = 1,
+                 alpha = 0.5) +
+    geom_point(aes(x = imdbRating, 
+                   y = Metascore),
+               colour = "blue",
+               size = 2) +
+    geom_abline(aes(slope = slope, 
+                    intercept = intercept),
+               colour = "#666666", 
+               size = 1) +
+    labs(title = glue("Using method: Predicted Metascore = {intercept} + {slope} * imdbRating"),
+         subtitle = glue("RMSE = {RMSE}")) +
+    theme_minimal() +
+    scale_y_continuous(limits = c(min(training_data$Metascore), max(training_data$Metascore)))
+}
+
+```
+
+```{css}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+
+img {width:100%}
+```
+
+```{js echo=FALSE}
+$(function() {
+  var editor;
+  $('.ace_editor').each(function( index ) {
+    editor = ace.edit(this);
+    editor.getSession().setUseWrapMode(true);
+    editor.setFontSize("16px");
+    });
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
+})
+```
+
+## How to train your robot!
+
+![](images/training.PNG){style="width:400px"}
+
+In Topic 3B we used supervised machine learning approaches to develop prediction models. In particular, we used linear regression to fit a line to data.
+
+### But how do supervised machine learning algorithms work?
+
+To explore some of the key ideas of supervised machine learning algorithms, we'll explore the task of training a robot to draw lines to make predictions.
+
+![](https://media.tenor.com/images/233ac4c38644b25a0796df9573bf6828/tenor.gif){style="width:200px"}
+
+> Note this interactive investigation will NOT be assesed in the final exam :-) 
+
+### But first, training data!
+
+For the Tutorial 2B task, you explored building a prediction model using movie ratings. The key words you used to obtain data for training and testing are shown below:
+
+![](images/movies.PNG){style="width:400px"}
+
+I created a training data set using two movies for each key word, and a testing data set using one movie for each key word. I made sure for both training and testing data sets that I had movies which had both an `imdbRating` and a `Metascore`.
+
+### What makes this supervised machine learning?
+
+Remember, supervised machine learning is like revising for an exam. You don't know what will be asked in the exam, but you can learn from what questions were asked in previous exams and what the answers were to these questions. 
+
+That's why we have training data that has the answers (labels) to our question (What is the metascore?), as well as possible features (variables) we can use in our prediction model.
+
+> And just like in life, if you don't revise for an exam (HINT HINT!) using previous exams or examples, you will be no better than an untrained robot trying to get the answer correct!
+
+### So let's start with an untrained robot then!
+
+For this task, our goal is to build a model that **predicts the metascore** of a movie. 
+
+![](images/untrained_robot.PNG){style="width:400px"}
+
+We will tell our robot what to do through code. So that our robot can **learn**, we need some sort of score to measure their performance.
+
+> In the code below, we only tell the robot the metascores are between 0 and 100. That's it! The robot then just guesses a `Metascore` between these two numbers. Run the code a few times and see how well the robot performs!
+
+```{r random-predict, exercise=TRUE, exercise.lines = 20}
+# the actual metascore
+actual_metascore <- training_data %>%
+  sample_n(1) %>%
+  pull(Metascore)
+
+# the robot-generated metascore
+predicted_metascore <- 0 : 100 %>%
+  sample(1)
+
+# Did the robot get it correct?
+correct <- ifelse(actual_metascore == predicted_metascore,
+                  "correct",
+                  "wrong")
+
+# Print a message
+glue("The actual metascore was {actual_metascore}.\nThe robot predicted a metascore of {predicted_metascore}.\nThis is {correct}.")
+```
+
+### Is this the best way to learn?
+
+If we just tell our robot "correct" or "wrong" and don't let them know why they were wrong, how well our robot learn to do better?
+
+> In the code below, we still only tell the robot the metascores are between 0 and 100. The robot then just guesses a `Metascore` between these two numbers. But this time we tell the robot how wrong they were, by telling them how different the actual `Metascore` score was from what they predicted.
+
+```{r random-predict-measure, exercise=TRUE, exercise.lines = 18}
+# the actual metascore
+actual_metascore <- training_data %>%
+  sample_n(1) %>%
+  pull(Metascore)
+
+# the robot-generated metascore
+predicted_metascore <- 0 : 100 %>%
+  sample(1)
+
+# Did the robot get it correct?
+error <- abs(actual_metascore - predicted_metascore)
+
+# Print a message
+glue("The actual metascore was {actual_metascore}.\nThe robot predicted a metascore of {predicted_metascore}.\nYou were wrong by {error} points.")
+```
+
+### Finding an optimal approach
+
+You can probably see that the method our robot is using to make predictions is not going so well. But we need some way of measuring why it's not going so well, so when we try new methods, we can measure the progress of our learning.
+
+Let's try out our robot's current method for predicting the `Metascore` on all `r nrow(training_data)` movies in our training data.
+
+> In the plot below, the actual `Metascore` for each movie is shown in blue, and the robot's `predictedMetascore` is shown in dark gray. How wrong the robot is - the error - is shown with a red vertical line, with the length of the line shown above - the number of points away from the actual `Metascore`. 
+
+```{r}
+set.seed(2020)
+predicted_metascore <- 0 : 100 %>%
+  sample(nrow(training_data))
+
+training_data$predictedMetascore <- predicted_metascore
+
+training_data %>%
+  rowwise() %>%
+  mutate(error = abs(Metascore - predictedMetascore),
+       error_pos = max(Metascore, predictedMetascore) + 5) %>%
+ggplot() +
+  geom_segment(aes(x = movie_num, 
+                   y = Metascore, 
+                   xend = movie_num, 
+                   yend = predictedMetascore),
+               colour = "red",
+               size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = Metascore),
+             colour = "blue",
+             size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = predictedMetascore),
+             colour = "#666666", 
+             size = 2) +
+  geom_text(aes(x = movie_num,
+                y = error_pos,
+                label = error),
+            size = 2,
+            colour = "black") +
+  theme_minimal()
+```
+
+### So, overall, how well did our robot do?
+
+If we look at how long each of the red lines, and take the average of these lengths, this will give us an overall measure of our error.
+
+> The technical term for this measure is the root mean square error or **RMSE**. How you calculate it is a bit more complicated then just finding "the average size of the errors" but that's basically the idea.
+
+```{r}
+set.seed(2020)
+predicted_metascore <- 0 : 100 %>%
+  sample(nrow(training_data))
+
+training_data$predictedMetascore <- predicted_metascore
+
+training_data <- training_data %>%
+   rowwise() %>%
+  mutate(error = abs(Metascore - predictedMetascore),
+       error_pos = max(Metascore, predictedMetascore) + 5,
+       error_squared = (Metascore - predictedMetascore)^2)
+
+RMSE <- mean(training_data$error_squared) %>% sqrt() %>% round()
+
+training_data %>%
+ggplot() +
+  geom_segment(aes(x = movie_num, 
+                   y = Metascore, 
+                   xend = movie_num, 
+                   yend = predictedMetascore),
+               colour = "red",
+               size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = Metascore),
+             colour = "blue",
+             size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = predictedMetascore),
+             colour = "#666666", 
+             size = 2) +
+  geom_text(aes(x = movie_num,
+                y = error_pos,
+                label = error),
+            size = 2,
+            colour = "black") +
+  labs(title = "Using method: randomly guess Metascore between 0 and 100",
+       subtitle = glue("RMSE = {RMSE}")) +
+  theme_minimal()
+```
+
+### Ready to learn?
+
+So, the method of just guessing gave a **RMSE** of 39, which means that this model will generate predictions for the `Metascore` that are about 39 points away, on average, from what they actually are (for the training data). I think our robot can do better!!
+
+We've been a bit mean and not let our robot look at any of the `Metascore` values for the training data. What could the robot learn from these?
+
+> Run the code below to visualise all the `Metascore` values for the movies in the training data. 
+
+```{r mean-approach, exercise=TRUE}
+training_data %>%
+  ggplot() + 
+  geom_dotplot(aes(x = Metascore),
+               binwidth = 1) +
+  scale_y_discrete(breaks = NULL, NULL) 
+```
+
+Turns out, none of the `Metascore` values are below `r min(training_data$Metascore)`, and the mean `Metascore` is `r mean(training_data$Metascore) %>% round()`. Our robot can learn from this to do a better job of predicting!
+
+![](images/learning.PNG){style="width:400px"}
+
+### The simplest regression model!
+
+The simplest **regression** model that we can use to make predictions is to just use the mean value of the **response variable**. This is also called the *constant only model*. In this case, this would be just to predict that a movie has whatever the mean `Metascore` ratings are for all the movies in the training data.
+
+> Run the code a few times below to see how well our robot performs with this new method!
+
+```{r constant_predict, exercise=TRUE, exercise.lines = 18}
+# the actual metascore
+actual_metascore <- training_data %>%
+  sample_n(1) %>%
+  pull(Metascore)
+
+# the robot-generated metascore
+predicted_metascore <- mean(training_data$Metascore) %>% round()
+
+# Did the robot get it correct?
+error <- abs(actual_metascore - predicted_metascore)
+
+# Print a message
+glue("The actual metascore was {actual_metascore}.\nThe robot predicted a metascore of {predicted_metascore}.\nYou were wrong by {error} points.")
+```
+
+### It looks like the predictions were closer...
+
+But let's check out how this approach works. Does it give us a lower RMSE than before?
+
+```{r}
+predicted_metascore <- mean(training_data$Metascore) %>% round()
+
+training_data$predictedMetascore <- predicted_metascore
+
+training_data <- training_data %>%
+   rowwise() %>%
+  mutate(error = abs(Metascore - predictedMetascore),
+       error_pos = max(Metascore, predictedMetascore) + 5,
+       error_squared = (Metascore - predictedMetascore)^2)
+
+RMSE <- mean(training_data$error_squared) %>% sqrt() %>% round()
+
+training_data %>%
+ggplot() +
+  geom_segment(aes(x = movie_num, 
+                   y = Metascore, 
+                   xend = movie_num, 
+                   yend = predictedMetascore),
+               colour = "red",
+               size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = Metascore),
+             colour = "blue",
+             size = 2) +
+  geom_point(aes(x = movie_num, 
+                 y = predictedMetascore),
+             colour = "#666666", 
+             size = 2) +
+  geom_text(aes(x = movie_num,
+                y = error_pos,
+                label = error),
+            size = 2,
+            colour = "black") +
+  labs(title = "Using method: Constant-only model",
+       subtitle = glue("RMSE = {RMSE}")) +
+  theme_minimal()
+```
+
+> Woo hoo! Our RMSE is now down to only 15 points!  So, the method of always using the mean `Metascore` (the constant-only model) will generate predictions for the `Metascore` that are about 15 points away, on average, from what they actually are (for the training data). 
+
+### Is that all for our robot's learning?
+
+Hmmm, I think our robot can still do even better! Take another look at the method our robot used, with a slightly different visualisation.
+
+```{r}
+predicted_metascore <- mean(training_data$Metascore) %>% round()
+
+training_data$predictedMetascore <- predicted_metascore
+
+training_data <- training_data %>%
+   rowwise() %>%
+  mutate(error = abs(Metascore - predictedMetascore),
+       error_pos = max(Metascore, predictedMetascore) + 5,
+       error_squared = (Metascore - predictedMetascore)^2)
+
+RMSE <- mean(training_data$error_squared) %>% sqrt() %>% round()
+
+response_mean <- mean(training_data$Metascore)
+
+training_data %>%
+ggplot() +
+  geom_segment(aes(x = imdbRating, 
+                   y = Metascore, 
+                   xend = imdbRating, 
+                   yend = predictedMetascore),
+               colour = "red",
+               size = 2) +
+  geom_point(aes(x = imdbRating, 
+                 y = Metascore),
+             colour = "blue",
+             size = 2) +
+  geom_abline(aes(slope = 0, 
+                  intercept = mean(Metascore)),
+             colour = "#666666", 
+             size = 1) +
+  geom_text(aes(x = imdbRating,
+                y = error_pos,
+                label = error),
+            size = 2,
+            colour = "black") +
+  labs(title = "Using method: Constant-only model",
+       subtitle = glue("RMSE = {RMSE}")) +
+  theme_minimal()
+```
+
+> Can you see that for movies that have an `imdbRating` of less than 7.5, the most of actual `Metascore` values are lower than the mean of `r mean(training_data$Metascore) %>% round()`? And that most of the movies with `imdbRating` values higher than 7.5 have actual `Metascore` values higher than the mean of `r mean(training_data$Metascore) %>% round()`?
+
+### Putting some slope into our model!
+
+Let's get our robot to try out a line that has a slope as well as a constant. The robot has worked out the best place to start with fitting a line - by using the **centroid**. The centroid is positioned at `r mean(training_data$imdbRating) %>% round(1)` for the `imdbRating` and `r mean(training_data$Metascore) %>% round()` for the `Metascore`.  
+
+> But how will the robot learn what slope to make the line? Put yourself in the role of a robot! Run the code below, changing the slope each time, and see if you can work out how the robot will learn what the "line of best fit" is!
+
+```{r slope-changer, exercise=TRUE}
+# try changing the slope!
+slope <- 0
+
+checkModel(training_data, slope)
+```
+
+### And that's the essential idea behind supervised machine learning!
+
+The robot will keep trying over and over again, until it finds the line that fits the data with the **lowest RMSE**. It's like giving a **learning objective** for the robot to build a model that produces predictions that are the closest to the real thing as it can get, given the constraints of only using one feature/variable (`imdbRating`) and a single straight line.
+
+
+```{r}
+robot <- image_read("images/robot_go.png") %>%
+  image_scale(300)
+
+slopes <- c(0, -45, -20, 5, 40, 10, 30, 18, 16, 14, 12, 13, 12.5, 12.5, 12.5, 12.5)
+
+img <- image_graph(width = 1000, height = 600, res = 96)
+frames <- map(1 : length(slopes), function(i){
+  slope <- slopes[i]
+  p <- checkModel(training_data, slope)
+  print(p)
+})
+nope <- dev.off()
+
+img %>%
+  image_composite(robot, offset = "+700+300") %>%
+  image_animate(fps = 1)
+```
+
+## <a>Return to home page</a>
