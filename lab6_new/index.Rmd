@@ -1,0 +1,386 @@
+---
+title: "STATS 100 Lab 6"
+output: 
+  learnr::tutorial:
+    progressive: TRUE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(stringr)
+library(glue)
+library(knitr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+# helpful things
+data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRjKqF6iY_uwnBydugwJTw1jDRHzSB5Suk1cLMxQlMaSGk3CleRqbIx4haDeu8Cyup_jTQ-LlO2CDma/pub?gid=0&single=true&output=csv")
+
+questions <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRjKqF6iY_uwnBydugwJTw1jDRHzSB5Suk1cLMxQlMaSGk3CleRqbIx4haDeu8Cyup_jTQ-LlO2CDma/pub?gid=936133379&single=true&output=csv")
+
+long_data <- data %>%
+  pivot_longer(2:51, "question", "rating") %>%
+  left_join(questions) %>%
+  mutate(personality_trait = str_sub(question,1,3),
+         statement_num = parse_number(question))
+
+```
+
+```{css}
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 12pt;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 12pt;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+
+img {width: 100%}
+```
+
+```{js echo=FALSE}
+$(function() {
+var editor;
+$('.ace_editor').each(function( index ) {
+  editor = ace.edit(this);
+  editor.getSession().setUseWrapMode(true);
+  editor.setFontSize("16px");
+  });
+  
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+
+})
+```
+
+## Lab 6
+
+### Exploring cluster analysis
+
+In this lab, you will explore how to use the k-means clustering algorithm to identify similar groups of people.
+
+> The recommended start date for this lab is **Week 10**, as you'll use statistical and computational ideas covered in Topic 3C.
+
+### The Big Five personality traits
+
+Watch this short video to learn more about the Big Five personality traits.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KCwHV9HCxH0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Personality traits are also relevant to business, particularly when considering team work and leadership. Have a quick read of this article: <a href="https://www.businessinsider.com.au/big-five-personality-traits-2016-12?r=US&IR=T" target="blank">Big five personality traits</a>
+
+### What can we discover?
+
+In Lecture 3C.2, I quickly discussed one source of data from a study about these five personality traits: Data collected during 2016 to 2018 through an interactive online personality test.
+[Source: <a href="https://www.kaggle.com/tunguz/big-five-personality-test" target="blank">Kaggle</a>].
+
+This particular study had over 1 million participants, but we'll focus on just 100 of these participants in our exploration. Participants were asked 50 questions - 10 for each of the big five personality traits, and gave their response on a scale from 1 to 5 to answer each question, where 1 = Disagree, 3 = Neutral, and 5 = Agree.
+
+> What can we discover about these 100 people and their personality traits? This lab is a little different from previous ones, as we will work through an entire exploration process together.
+
+### But first data
+
+I've taken a random sample of 100 responses from the study and copied these into a Google sheet. We can read data from this Google sheet into R if we first publish the Google sheet as a CSV file. You had to do this for Part C of your Individual Project.
+
+First view the data in the Google sheet by clicking this link: <a href="https://docs.google.com/spreadsheets/d/1biytLjt_bGUzhjag3iB35jEkocbGAMtyHNKuzjVh-ek/view" target="blank">https://docs.google.com/spreadsheets/d/1biytLjt_bGUzhjag3iB35jEkocbGAMtyHNKuzjVh-ek/view</a>
+
+Then run the code below to read the same data into R.
+
+```{r get-data, exercise=TRUE, exercise.lines=6}
+data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRjKqF6iY_uwnBydugwJTw1jDRHzSB5Suk1cLMxQlMaSGk3CleRqbIx4haDeu8Cyup_jTQ-LlO2CDma/pub?gid=0&single=true&output=csv")
+
+data
+```
+
+> What can you learn about the data? What are the variable names? How many rows of data are there?
+
+### Who are these people?
+
+As the data shared has been anonymised (and perhaps minimal personal information was collected from those who participated), we really can't learn that much about **WHO** the participants in the study were. One variable that has been provided is the country the participant was from. 
+
+> So let's take a look - run the code below to create a **bar chart of counts** using the `data` that was already read into R in the previous code chunk. Remember country codes from Lab 1? They are short ways of recording the name of a country!
+
+```{r countries, exercise=TRUE}
+data %>%
+  ggplot() +
+  geom_bar(aes(x = country)) +
+  coord_flip()
+```
+
+### How long did it take them to answer the 50 questions?
+
+Each participant had to respond to 50 statements, each on a scale from 1 to 5, where 1 = Disagree, 3 = Neutral, and 5 = Agree. How many minutes did this typically take?
+
+> Let's take a look using a **density plot** - run the code below to create a density plot and see if you can work out how to the change the shaded colour of the density plot to another colour. 
+
+```{r survey-time, exercise=TRUE}
+data %>%
+  ggplot() +
+  geom_density(aes(x = time_questions_mins),
+               fill = "#cae8dc",
+               colour = "#ffffff")
+```
+
+### But what about their responses?
+
+Before we look at their answers, let's take a closer look at the questions that were used in the study.
+
+> Run the code below to see what question statement matches each of the variable names in the data set. What do you notice about how the statements are worded?
+
+```{r questions, exercise=TRUE, exercise.lines=5}
+questions <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRjKqF6iY_uwnBydugwJTw1jDRHzSB5Suk1cLMxQlMaSGk3CleRqbIx4haDeu8Cyup_jTQ-LlO2CDma/pub?gid=936133379&single=true&output=csv")
+
+questions
+```
+
+### Just a small restructure!
+
+Sometimes we have to restructure our data so it is easier to work with and visualise. At the moment, each answer for each person in the study has been recorded in its own column, and each row represents one person. 
+
+> Run the code below and explore what the data looks like after I've restructured it. We call this type of restructure "making a table longer". 
+
+I've also added the question statements to the data, to make it easier to create informative graphs later, and developed a couple of new variables to help with analysing the data later!
+
+```{r restructure, exercise=TRUE, exercise.lines=8}
+long_data <- data %>%
+  pivot_longer(2:51, "question", "rating") %>%
+  left_join(questions) %>%
+  mutate(personality_trait = str_sub(question, 1, 3),
+         statement_num = parse_number(question))
+
+long_data
+```
+
+### How do the scores compare across the 50 statements?
+
+It's always good to try to get an overall view of your data before you do any deeper level analysis.
+
+> Run the code below to produce bar charts of counts for each question statement, set out in a grid arranged by the personality trait and the question number. How has colour been used in this plot? Which questions had high scores? Which questions had low scores? Which questions had pretty "flat" or evenly distributed scores?
+
+```{r question-comp, exercise=TRUE}
+long_data %>%
+  ggplot() +
+  geom_bar(aes(x = value, fill = personality_trait)) +
+  facet_grid(personality_trait ~ statement_num) +
+  guides(fill = FALSE)
+```
+
+### Pick two, any two!
+
+Representing the data using bar charts is interesting, but representing the data this way breaks the connection between how the same person has answered all 50 questions. 
+
+> Run the code below to produce bar charts of just two of the questions. What do you notice about how they compare? Do you expect people who scored high on one question to score low on the other question? Try comparing two other questions this way!
+
+```{r question-bi, exercise=TRUE}
+questions_selected <- c("AGR1", "AGR2")
+
+long_data %>%
+  filter(question %in% questions_selected) %>%
+  ggplot() +
+  geom_bar(aes(x = value, fill = question_statement)) +
+  facet_wrap(~question_statement, ncol = 1) +
+  guides(fill = FALSE)
+```
+
+### Pair-wise analysis
+
+To explore the **relationship** between responses to any two questions in the survey, we need to go back and use the **data** in the form where each row is a different person. 
+
+> Run the code below to produce a scatter plot to compare the scores for two questions. Each point represents how many people gave that combination of ratings. What does this visualisation reveal? Is this visualisation that helpful at comparing responses for two questions across the different people? Try comparing two other questions this way!
+
+```{r question-scatter, exercise=TRUE}
+data %>%
+  ggplot() +
+  geom_count(aes(x = AGR1, y = AGR2))
+```
+
+### A different way to visualise
+
+Let's focus on the questions that were concerned with **Agreeableness**. I've used tiles (rectangles) to represent each person's score for each of the 10 questions. Each person is one row of 10 tiles. 
+
+> Run the code to see the visualisation. Darker shades of blue mean higher scores. Can you see any patterns across the rows, people that answered this set of 10 questions similarly?
+
+```{r vis-table, exercise=TRUE, excercise.lines=17}
+trait <- "AGR"
+
+long_data %>%
+  filter(personality_trait == trait) %>%
+  ggplot() +
+  geom_tile(aes(x = question, 
+                y = person_id, 
+                alpha = value/5),
+            fill = "blue") +
+  scale_y_discrete(breaks = NULL) +
+  theme(panel.background = element_rect(fill = "#ffffff")) +
+  labs(title = glue("Comparing scores for questions about {trait}"))
+```
+
+### Cluster time!
+
+We can use the *k*-means clustering algorithm to analyse the similarities of responses to these 10 questions. 
+
+ 1. We have to `drop` any rows/people where there are not answers for all 10 questions.
+ 2. We focus on just the questions that are about `AGR` **Agreeableness**
+ 3. We use the `kmeans()` function to cluster the rows of data using `2` groups/centers/clusters.
+ 4. We add the cluster number back to the data so each row now has a new variable which says what cluster that person belongs to.
+
+> Run the code and then explore the table to see the new variable `cluster` that has been added to the data. Use the arrow at the top right of the table to move along the columns, and the page numbers at the bottom to see different rows. What do you notice about the responses for people in cluster 1 vs cluster 2?
+
+```{r vis-clusters, exercise=TRUE, exercise.lines = 20}
+data <- data %>%
+  drop_na()
+
+trait <- "AGR"
+focus_data <- data %>%
+  select(starts_with(trait)) 
+
+set.seed(2020)
+cluster_num <- 2
+kmeans_data <- kmeans(focus_data, centers = cluster_num)
+data$cluster <- kmeans_data$cluster %>% as.factor()
+
+data %>%
+  select(person_id, starts_with(trait), cluster) %>%
+  arrange(cluster) %>%
+  mutate(placeholder = row_number()) %>%
+  arrange(parse_number(person_id))
+```
+
+### Visualising the clusters!
+
+To help us humans SEE the clusters that have been discovered by the computer, we can use a similar **tile** visualisation as earlier, but arrange the rows so that rows from the same cluster go with each other.
+
+> Get ready for a MEGA amount of code! It look's like a lot, but it is just combining all the bits of code used so far in the lab :-) Then take another look at the questions for this trait, and see if you can describe the kind of people who were grouped into cluster 1 based on the questions they scored highly on.
+
+```{r vis-clusters-mega, exercise=TRUE, exercise.lines=30}
+data <- data %>%
+  drop_na()
+
+trait <- "AGR"
+focus_data <- data %>%
+  select(starts_with(trait)) 
+
+set.seed(2020)
+cluster_num <- 2
+kmeans_data <- kmeans(focus_data, centers = cluster_num)
+data$cluster <- kmeans_data$cluster %>% as.factor()
+
+data %>%
+  select(person_id, starts_with(trait), cluster) %>%
+  arrange(cluster) %>%
+  mutate(placeholder = row_number()) %>%
+  pivot_longer(2:11, "question") %>%
+  ggplot() +
+  geom_tile(aes(x = question, 
+                y = placeholder, 
+                fill = cluster,
+                alpha = value/5)) +
+  scale_y_discrete(breaks = NULL) +
+  theme(panel.background = element_rect(fill = "#ffffff")) +
+  labs(title = glue("Comparing scores for questions about {trait} using {cluster_num} clusters"))
+
+questions %>%
+  filter(str_detect(question, trait))
+```
+
+### Lab challenge!
+
+Woo hoo! You've made it to your last lab challenge.
+
+![](https://i.chzbgr.com/full/7961859584/h008D8CC6/i-haz-access-code){style="width:400px"}
+
+Your challenge is to go back to any section of this lab, and find a chunk of code that you feel comfortably changing. 
+
+> Change the code, take screenshots of **the code you used** and the **visualisation produced**, and include these in your submission for this lab.
+
+## Return to home page

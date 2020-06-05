@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="true" />
+<meta name="allow-skip" content="false" />
+
+<title>STATS 100 Online labs</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<style type="text/css">
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+.tutorialTitle:before {
+  content: url("images/STATS100-Cover-Logo_small.png");
+  display: block;
+}
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 16px;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+</style>
+<script type="text/javascript">
+$(function() {
+  var editor;
+  $('.ace_editor').each(function( index ) {
+    editor = ace.edit(this);
+    editor.getSession().setUseWrapMode(true);
+    editor.setFontSize("16px");
+    });
+
+
+
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+  
+})
+</script>
+<div id="section-lab-3" class="section level2">
+<h2>Lab 3</h2>
+<div id="section-generating-data-from-models" class="section level3">
+<h3>Generating data from models</h3>
+<p>In this lab, you will learn how to create fun graphics and memes using chance models.</p>
+<blockquote>
+<p>The recommended start date for this lab is <strong>Week 6</strong>, as you’ll use statistical and computational ideas covered in Topics 2A and 2B (Weeks 4 and 5). <strong>Additionally, you should have completed Lab 1 &amp; Lab 2 before attempting this lab :-)</strong></p>
+</blockquote>
+</div>
+<div id="section-a-fun-example-of-a-chance-model" class="section level3">
+<h3>A fun example of a chance model</h3>
+<p>Chance models are not just used for carrying out statistical tests, but also for making fun interactive things too!</p>
+<p>Watch the short extract of the video below:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LuoW-qV5oPQ?start=1&amp;end=38" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p><br />And then this next short extract that explains how the “maths” works:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LuoW-qV5oPQ?start=936&amp;end=987" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</div>
+<div id="section-lets-create-something-like-this-interactive-poster-with-code" class="section level3">
+<h3>Let’s create something like this interactive poster with code!</h3>
+<p>We are going to use just a few of the functions from the <a href="https://cran.r-project.org/web/packages/magick/vignettes/intro.html"><code>magick</code></a> package for this lab.</p>
+<p>Unlike other labs, we are going to build up the code from scratch so you can learn a little more about how we can write code to create cool things.</p>
+<blockquote>
+<p>Key learning ideas about code will be highlighted like this! These are ideas we have already used in labs 1 and 2, and will continue to use for the remaining labs.</p>
+</blockquote>
+</div>
+<div id="section-lets-make-a-box-for-the-poster" class="section level3">
+<h3>Let’s make a box for the poster!</h3>
+<p>The first thing we need is to display a square box, like the one shown in the video:</p>
+<div class="figure">
+<img src="images/lab3_box.PNG" alt="Source: https://www.youtube.com/watch?v=LuoW-qV5oPQ" />
+<p class="caption">Source: <a href="https://www.youtube.com/watch?v=LuoW-qV5oPQ" class="uri">https://www.youtube.com/watch?v=LuoW-qV5oPQ</a></p>
+</div>
+<p>To do that, we use the function <code>image_blank()</code> to create a new blank image that has a grey background. Run the code below to create the poster background!</p>
+<div class="tutorial-exercise" data-label="make-box" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>Any of the functions in this lab that start with <code>image_</code> e.g. <code>image_blank()</code> come from the magick package. A package is a collection of helpful functions that someone else has written that we can use to make cool stuff.</p>
+</blockquote>
+</div>
+<div id="section-time-to-get-argumentative" class="section level3">
+<h3>Time to get argumentative!</h3>
+<p>We will use a lot of functions in our code. Functions look like this: <code>image_blank()</code></p>
+<p><img src="https://i.imgflip.com/gn2hh.jpg" /></p>
+<p>You’ll see in the previous that we had to define the width and height of the image (in pixels), as well as the hex code for the colour. These are called the <strong>arguments</strong> of the function.</p>
+<blockquote>
+<p>Each argument is given a value using an <code>=</code> sign. We separate each argument with a <code>,</code> so the computer knows they are different things, and put them all inside a <code>()</code> straight after the name of the function.</p>
+</blockquote>
+<p>You can put each argument on its own line if you want, or on the same line (see examples below).</p>
+<pre class="r"><code>image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;)
+
+image_blank(width = 500, height = 500, color = &quot;#999999&quot;)</code></pre>
+<blockquote>
+<p>Because width and height are number values, they don’t need <code>""</code> around them, but the color value is a <em>string</em> (made up of characters/letters) so needs <code>""</code> around it. You might also notice that this package uses the US spelling of colour - color!</p>
+</blockquote>
+</div>
+<div id="section-its-hip-to-be-square" class="section level3 tabset">
+<h3>It’s hip to be square!</h3>
+<p>In the code box below, use the function <code>image_blank()</code> to create a box that is 800 pixels in <strong>width</strong>, 200 pixels in <strong>height</strong> and is the hex <strong>color</strong> of your choice!</p>
+<p>You can find hex colours here: <a href="https://www.w3schools.com/colors/colors_picker.asp" class="uri">https://www.w3schools.com/colors/colors_picker.asp</a></p>
+<blockquote>
+<p>Start by typing <code>image_blank(</code> into the empty code box below, and <code>R</code> (the programming language) will helpfully remind you what arguments you can use for the function :-)</p>
+</blockquote>
+<div id="section-give-it-a-go" class="section level4">
+<h4>Give it a go!</h4>
+<div class="tutorial-exercise" data-label="square-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-see-a-solution" class="section level4">
+<h4>See a solution</h4>
+<pre class="r"><code>image_blank(width = 800, 
+            height = 200, 
+            color = &quot;#e08d3c&quot;)</code></pre>
+<p><img src="index_files/figure-html/square-demo-1.png" width="400" /></p>
+<pre class="r"><code># you can write comments after the # symbol
+# the computer will ignore these
+# e08d3c is called &quot;tiger eye&quot;</code></pre>
+</div>
+</div>
+<div id="section-its-only-words" class="section level3">
+<h3>It’s only words…</h3>
+<p>Next we need to add words to our poster. Let’s start by adding the top line of the poster to our box!</p>
+<div class="figure">
+<img src="images/lab3_box.PNG" alt="Source: https://www.youtube.com/watch?v=LuoW-qV5oPQ" />
+<p class="caption">Source: <a href="https://www.youtube.com/watch?v=LuoW-qV5oPQ" class="uri">https://www.youtube.com/watch?v=LuoW-qV5oPQ</a></p>
+</div>
+<p>We’ll use the function <code>image_annotate</code> to do this. Change the text argument below to “YOU ARE A” and then run the code!</p>
+<div class="tutorial-exercise" data-label="add-text" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;) %&gt;%
+image_annotate(text = &quot;TEXT HERE&quot;,
+               size = 30)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>The <code>%&gt;%</code> is called a pipe, and when you read the code you can say “and then” whenever you see it! For the code above, I would read the code as “Make a blank image <strong>and then</strong> annotate the image with text”</p>
+</blockquote>
+</div>
+<div id="section-fun-with-text" class="section level3 tabset">
+<h3>Fun with text!</h3>
+<p>We need to add some arguments when we call the function <code>image_annotate()</code> so that the text looks more interesting. Play around with the code below to see if you can:</p>
+<ol style="list-style-type: decimal">
+<li>change the <strong>color</strong> of the text to white</li>
+<li>change the <strong>size</strong> of the text so it fits across the whole width of the box</li>
+</ol>
+<p>If you want, you could try changing the <code>font</code> argument to something else, and if you’re really curious, try seeing if you can work out what some other values for the <code>gravity</code> argument could be!</p>
+<div id="section-give-it-a-go-1" class="section level4">
+<h4>Give it a go!</h4>
+<div class="tutorial-exercise" data-label="text-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;) %&gt;%
+  image_annotate(&quot;YOU ARE A&quot;,
+                 color = &quot;#000000&quot;,
+                 size = 30,
+                 font = &quot;serif&quot;,
+                 gravity = &quot;north&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-see-a-solution-1" class="section level4">
+<h4>See a solution</h4>
+<pre class="r"><code>image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;) %&gt;%
+  image_annotate(&quot;YOU ARE A&quot;,
+                 color = &quot;#ffffff&quot;,
+                 size = 80,
+                 font = &quot;serif&quot;,
+                 gravity = &quot;north&quot;)</code></pre>
+<p><img src="index_files/figure-html/text-demo-1.png" width="250" /></p>
+</div>
+</div>
+<div id="section-randomly-selecting-words" class="section level3 tabset">
+<h3>Randomly selecting words</h3>
+<p>The interactive poster generates “motivational phrases” by randomly selecting one adjective from a list of eight, and then one noun from a list of eight. Because there are eight adjectives and eight nouns, there are <code>8 x 8 = 64</code> different phrases possible.</p>
+<p>To randomly select one word from a “list”, we can use the function <code>sample()</code>. Run the code <em>FIVE TIMES</em> to see what adjectives get randomly selected or “sampled”. Do you get the same word more than once, just by chance?</p>
+<div class="tutorial-exercise" data-label="word-groups" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="4">
+<pre class="text"><code>adjectives &lt;- c(&quot;MAJESTIC&quot;, &quot;CHAOTIC&quot;, &quot;STUNNING&quot;, &quot;FIERCE&quot;, &quot;UNIQUE&quot;, &quot;POWERFUL&quot;, &quot;WHOLESOME&quot;, &quot;FANCY&quot;)
+
+sample(adjectives, size = 1)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>We made a “list” by using the function <code>c()</code>, and then gave the name <strong>adjectives</strong> to the list by using <code>&lt;-</code>. Remember, each of the words in our list have <code>""</code> around them because they are strings/characters. You can pretty much name things whatever you want, but avoid using spaces in your name or symbols.</p>
+</blockquote>
+</div>
+<div id="section-lets-try-that-with-the-nouns" class="section level3 tabset">
+<h3>Let’s try that with the nouns!</h3>
+<p>The nouns used in the video were: HUMAN, CAT, EAGLE, TREE, FLOWER, LION, MOUNTAIN and POTATO.</p>
+<p>Try to write code below that will randomly select/sample <strong>TWO</strong> of these eight nouns (there’s some missing below!)</p>
+<p>If you’re feeling adventurous, see what happens when you try to select 12 words!</p>
+<div id="section-give-it-a-go-2" class="section level4">
+<h4>Give it a go!</h4>
+<div class="tutorial-exercise" data-label="random-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="4">
+<pre class="text"><code>nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;)
+
+sample()</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-see-a-solution-2" class="section level4">
+<h4>See a solution</h4>
+<pre class="r"><code>nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;, &quot;LION&quot;, &quot;MOUNTAIN&quot;, &quot;POTATO&quot;)
+
+sample(nouns, size = 2)</code></pre>
+<pre><code>## [1] &quot;TREE&quot; &quot;CAT&quot;</code></pre>
+</div>
+</div>
+<div id="section-copy-and-paste-with-glue" class="section level3 tabset">
+<h3>Copy and paste with glue!</h3>
+<p>I know there’s been a bit of code to learn about during this lab, but there’s just one more helpful thing to learn before we can recreate the interactive poster!</p>
+<p><img src="https://i.chzbgr.com/full/6199410944/hC00A0F2D/just-one-more-level-just-one-more" /></p>
+<blockquote>
+<p>A helpful function we can use is called <code>glue()</code>. It allows us to mix text that is fixed and text that comes from a function that might change.</p>
+</blockquote>
+<p>For example, I could make a “list” of the words to sample from.</p>
+<p><code>words &lt;- c("cool", "awesome", "amazing")</code></p>
+<p>I could randomly select one of these words.</p>
+<p><code>word &lt;- sample(word, size = 1)</code></p>
+<p>I could then print a message that combines some fixed text with whatever the random word is. See the <code>glue()</code> function in action below.</p>
+<div class="tutorial-exercise" data-label="glue-eg" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>words &lt;- c(&quot;cool&quot;, &quot;awesome&quot;, &quot;amazing&quot;)
+
+word &lt;- sample(words, size = 1)
+
+glue(&quot;Statistics is {word}!&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>To use the <code>glue()</code> function, you write out the text that you want to stay fixed between <code>""</code> and then use <code>{}</code> around text that comes from your earlier code.</p>
+</blockquote>
+</div>
+<div id="section-with-or-without-you" class="section level3">
+<h3>With or without you?</h3>
+<p>If you want to be able to randomly select the same thing in your “list” more than once, then you will need to sample with replacement. To do this, we set the value of the <code>replace</code> argument to <code>TRUE</code>.</p>
+<p>Try this out with the code below.</p>
+<p><img src="index_files/figure-html/glue-eg-1.png" width="109" /></p>
+<div class="tutorial-exercise" data-label="glue-mum" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>poss_letters &lt;- c(&quot;B&quot;, &quot;E&quot;, &quot;R&quot;)
+
+word &lt;- sample(poss_letters, size = 4, replace = TRUE) %&gt;%
+  str_flatten()
+
+glue(&quot;Is it {word} o&#39;clock yet?&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>The code about uses the <code>str_flatten()</code> function to “flatten” the four letters selected into one word. Remember the <code>%&gt;%</code> can be read as “as then”, so the second part of the code can be read "Sample four letters with replacement from the <strong>letters</strong>, flatten then into one word, and call this <strong>word</strong>.</p>
+</blockquote>
+</div>
+<div id="section-what-are-the-chances" class="section level3 tabset">
+<h3>What are the chances?</h3>
+<p>Suppose the letters A, C, and T are in a box.</p>
+<p>If you randomly select one letter at a time, take it out of the box and don’t replace it, and use the letters to spell a word in the order you selected them, how often will you spell the word CAT?</p>
+<blockquote>
+<p>The default argument for the function <code>sample()</code> is <code>replace = FALSE</code>, which means it will automatically sample without replacement if you don’t use the <code>replace =</code> argument.</p>
+</blockquote>
+<p>Complete the missing parts of the code below to investigate!</p>
+<div id="section-give-it-a-go-3" class="section level4">
+<h4>Give it a go!</h4>
+<div class="tutorial-exercise" data-label="glue-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>poss_letters &lt;- c()
+
+word &lt;- sample() %&gt;% str_flatten()
+
+glue(&quot;I spell&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-see-a-solution-3" class="section level4">
+<h4>See a solution</h4>
+<pre class="r"><code>poss_letters &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;T&quot;)
+
+word &lt;- sample(poss_letters, size = 3) %&gt;% str_flatten()
+
+glue(&quot;I spell {word}&quot;)</code></pre>
+<pre><code>## I spell ATC</code></pre>
+</div>
+</div>
+<div id="section-drum-roll-please-a-code-version-of-the-interactive-poster" class="section level3">
+<h3>Drum roll please … a code version of the interactive poster!</h3>
+<p>Below is some code that recreates the interactive poster.</p>
+<blockquote>
+<p>Take a look at each line of code and check if you kind of understand what each part the code does.</p>
+</blockquote>
+<p>Then run the code a few times to see what motivational phrases are created!</p>
+<div class="tutorial-exercise" data-label="placement" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="18">
+<pre class="text"><code>adjectives &lt;- c(&quot;MAJESTIC&quot;, &quot;CHAOTIC&quot;, &quot;STUNNING&quot;, &quot;FIERCE&quot;, &quot;UNIQUE&quot;, &quot;POWERFUL&quot;, &quot;WHOLESOME&quot;, &quot;FANCY&quot;)
+adjective &lt;- sample(adjectives, 1)
+
+nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;, &quot;LION&quot;, &quot;MOUNTAIN&quot;, &quot;POTATO&quot;)
+noun &lt;- sample(nouns, 1)
+
+phrase &lt;- glue(&quot;YOU ARE A {adjective} {noun}&quot;) %&gt;% str_wrap(10)
+
+image_blank(width = 500, 
+            height = 500, 
+            color = &quot;#999999&quot;) %&gt;%
+  image_annotate(phrase,
+                 color = &quot;#ffffff&quot;,
+                 size = 80,
+                 font = &quot;Impact&quot;,
+                 gravity = &quot;center&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>Did you spot a new function in there? The <code>str_wrap()</code> function let’s us tell the computer how many characters can fit across the poster, and wraps our text to fit.</p>
+</blockquote>
+</div>
+<div id="section-so-isnt-this-a-stats-course" class="section level3">
+<h3>So, isn’t this a stats course?</h3>
+<p>You might be wondering at this point how this lab relates to what we’ve been learning in Topic 2!</p>
+<p>Well, you should have noticed for all of the coding that uses the <code>sample()</code> function that you get different results each time you run the code. This is another example of <strong>chance variation</strong>, which is the whole basis of why and how we do statistical tests.</p>
+<p>I’ve just used more interesting examples than flipping coins, but here you go! Run the code below to simulate flipping a fair coin 20 times and printing the results.</p>
+<div class="tutorial-exercise" data-label="chance-variation" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>coin &lt;- c(&quot;H&quot;, &quot;T&quot;)
+
+flips &lt;- sample(coin, size = 20, replace = TRUE) %&gt;% 
+  str_flatten(collapse = &quot;-&quot;)
+
+glue(&quot;The results of the 20 flips were {flips}&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>We used the <code>replace = TRUE</code> so that each time we go to sample from heads or tails, there is always one of each, so a 50% chance of selecting a heads. The argument <code>collapse = "-"</code> is used for the <code>str_flatten()</code> function so that when all the HTTHHH etc are combined together they are separated by “-” to make it easier to read.</p>
+</blockquote>
+</div>
+<div id="section-what-about-the-memes-you-promised" class="section level3">
+<h3>What about the memes you promised?</h3>
+<p>Ah, yes! We’ve nearly got everything we need to generate random memes, we just need one more thing…… images!</p>
+<p>We can get URLs (links) to images from <a href="https://pixabay.com/" target = "blank">Pixabay</a>. Just search for images, and when find one you like right click on it and select “Copy image address”.</p>
+<p><img src="images/copy.PNG" style="width:500px" /></p>
+<p>To show the image, we use the <code>image_read()</code> function.</p>
+<div class="tutorial-exercise" data-label="show-image" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>url &lt;- &quot;https://cdn.pixabay.com/photo/2020/03/28/15/20/cat-4977436__340.jpg&quot;
+
+image_read(url) %&gt;%
+  image_scale(500)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>In the code above, the <code>image_scale()</code> function has been used to scale the image down to 500 pixels wide. If you don’t name the argument(s), <code>R</code> will assume you are using them in the same order as the function expects them to be used.</p>
+</blockquote>
+</div>
+<div id="section-find-the-url-of-this-lost-cat" class="section level3 tabset">
+<h3>Find the URL of this lost cat!</h3>
+<p>Click on the image below to open it within Pixabay</p>
+<p><a href="https://pixabay.com/photos/lost-cat-tree-sign-fun-art-977454/" target="blank"><img src="https://cdn.pixabay.com/photo/2015/10/08/10/28/education-977454_1280.jpg" width="800px" /></a></p>
+<p>Right click on the image <strong>on the Pixabay website</strong> to get its URL (Copy image address). Then adjust the code below to view the image with code so that the image is 800 pixels wide.</p>
+<div id="section-give-it-a-go-4" class="section level4">
+<h4>Give it a go!</h4>
+<div class="tutorial-exercise" data-label="image-try" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<pre class="text"><code>url &lt;- &quot;&quot;
+
+image_read(url) %&gt;%
+  image_scale(10)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-see-a-solution-4" class="section level4">
+<h4>See a solution</h4>
+<pre class="r"><code>url &lt;- &quot;https://cdn.pixabay.com/photo/2015/10/08/10/28/education-977454_1280.jpg&quot;
+
+image_read(url) %&gt;%
+  image_scale(800)</code></pre>
+<p><img src="index_files/figure-html/image-demo-1.png" width="400" /></p>
+</div>
+</div>
+<div id="section-making-a-meme" class="section level3">
+<h3>Making a meme!</h3>
+<p>To make a meme, you need an image and some text.</p>
+<ul>
+<li>I’ve used an image of cat looking up as my background image</li>
+<li>I’ve then generated a random phrase by selecting one of the three words “YOU”, “HUMAN” or “SLAVE”</li>
+<li>I’ve also randomly generated a colour to show the text from two options</li>
+</ul>
+<p><strong>Run the code a few times to see the chance variation!</strong></p>
+<div class="tutorial-exercise" data-label="add-image" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="16">
+<pre class="text"><code>url &lt;- &quot;https://cdn.pixabay.com/photo/2020/03/28/15/20/cat-4977436__340.jpg&quot;
+
+words &lt;- c(&quot;YOU&quot;, &quot;HUMAN&quot;, &quot;SLAVE&quot;)
+word &lt;- sample(words, size = 1)
+phrase &lt;- glue(&quot;HEY {word}!&quot;)
+
+colours &lt;- c(&quot;#FFFFFF&quot;, &quot;#e08d3c&quot;)
+colour &lt;- sample(colours, size = 1)
+
+image_read(url) %&gt;%
+  image_scale(800) %&gt;%
+  image_annotate(text = phrase,
+                 color = colour,
+                 size = 70,
+                 gravity = &quot;north-west&quot;,
+                 font = &quot;Impact&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+<blockquote>
+<p>If you want to put the text somewhere else on the poster, you can choose these other values for the gravity argument e.g. “south” will put your text at the bottom center of the poster</p>
+</blockquote>
+</div>
+<div id="section-lab-challenge" class="section level3">
+<h3>Lab challenge!</h3>
+<p>Your challenge is to create your own random meme generator.</p>
+<ul>
+<li>Use an image of your choice as the background</li>
+<li>Generate a random phrase and annotate the image with this phrase</li>
+<li><strong>Make one other feature of your meme random e.g. color, size, gravity, font, image</strong></li>
+</ul>
+<p>The code below will get you started but **you will need to add to it*.** <mark>Remember, you can scroll back up the page to see examples of how to make the changes!</mark></p>
+<blockquote>
+<p>You will need to take screenshots of <strong>the code you used</strong> and <strong>three examples of the memes generated</strong>, and include these in your submission for this lab.</p>
+</blockquote>
+<div class="tutorial-exercise" data-label="lab3challenge" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code>url &lt;- &quot;https://cdn.pixabay.com/photo/2017/07/31/11/21/people-2557399__340.jpg&quot;
+
+nouns &lt;- c(&quot;HUMAN&quot;, &quot;CAT&quot;, &quot;EAGLE&quot;, &quot;TREE&quot;, &quot;FLOWER&quot;, &quot;LION&quot;, &quot;MOUNTAIN&quot;, &quot;POTATO&quot;)
+noun &lt;- sample(nouns, size = 1)
+
+phrase &lt;- glue(&quot;YOU ARE A {noun}&quot;)
+
+image_read(url) %&gt;%
+  image_scale(500) %&gt;%
+  image_annotate(text = phrase,
+                 color = &quot;#ffffff&quot;,
+                 strokecolor = &quot;#000000&quot;,
+                 size = 50,
+                 gravity = &quot;center&quot;,
+                 font = &quot;Impact&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.timelimit":60,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-return-to-home-page" class="section level2">
+<h2>Return to home page</h2>
+
+<script type="application/shiny-prerendered" data-context="server-start">
+library(learnr)
+library(tidyverse)
+library(stringr)
+library(glue)
+library(rvest)
+library(magick)
+library(jsonlite)
+library(knitr)
+library(httr)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 60)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+
+# some functions
+
+# using code/ideas from here https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/
+emoji_image <- function(x) {
+  
+  x <- x %>% str_replace_all(" ","-")
+  r <- paste0("https://emojipedia.org/", x) %>% 
+    GET()
+  if(status_code(r) == 200)
+  {
+  res <- paste0("https://emojipedia.org/", x) %>%
+    read_html() %>%
+    html_node('body > div.container > div.content > article > section.vendor-list > ul > li:nth-child(2) > div.vendor-container.vendor-rollout-target > div.vendor-image > img') %>%
+    html_attr("src")
+    return(res)
+  }
+  else
+  {
+      # confused-face for not found
+    return("https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/google/241/confused-face_1f615.png")
+  }
+}
+
+googleTranslate <- function(fromText, fromLanguage, toLanguage){
+  fromText <- paste(fromText, collapse="|")
+  url <- URLencode(glue("https://script.google.com/macros/s/AKfycbx3Bl6TUgxuG3YlqwEuWdADn9TeB05TpP0mzPRYzT1GKmBTZVk/exec?q={fromText}&source={fromLanguage}&target={toLanguage}"))
+  fromJSON(url) %>% pull(translated_phrase) %>% asis_output()
+}
+
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-make-box-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-make-box-code-editor`)), session)
+output$`tutorial-exercise-make-box-output` <- renderUI({
+  `tutorial-exercise-make-box-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-square-try-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-square-try-code-editor`)), session)
+output$`tutorial-exercise-square-try-output` <- renderUI({
+  `tutorial-exercise-square-try-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-add-text-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-add-text-code-editor`)), session)
+output$`tutorial-exercise-add-text-output` <- renderUI({
+  `tutorial-exercise-add-text-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-text-try-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-text-try-code-editor`)), session)
+output$`tutorial-exercise-text-try-output` <- renderUI({
+  `tutorial-exercise-text-try-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-word-groups-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-word-groups-code-editor`)), session)
+output$`tutorial-exercise-word-groups-output` <- renderUI({
+  `tutorial-exercise-word-groups-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-random-try-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-random-try-code-editor`)), session)
+output$`tutorial-exercise-random-try-output` <- renderUI({
+  `tutorial-exercise-random-try-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-glue-eg-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-glue-eg-code-editor`)), session)
+output$`tutorial-exercise-glue-eg-output` <- renderUI({
+  `tutorial-exercise-glue-eg-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-glue-mum-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-glue-mum-code-editor`)), session)
+output$`tutorial-exercise-glue-mum-output` <- renderUI({
+  `tutorial-exercise-glue-mum-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-glue-try-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-glue-try-code-editor`)), session)
+output$`tutorial-exercise-glue-try-output` <- renderUI({
+  `tutorial-exercise-glue-try-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-placement-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-placement-code-editor`)), session)
+output$`tutorial-exercise-placement-output` <- renderUI({
+  `tutorial-exercise-placement-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-chance-variation-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-chance-variation-code-editor`)), session)
+output$`tutorial-exercise-chance-variation-output` <- renderUI({
+  `tutorial-exercise-chance-variation-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-show-image-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-show-image-code-editor`)), session)
+output$`tutorial-exercise-show-image-output` <- renderUI({
+  `tutorial-exercise-show-image-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-image-try-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-image-try-code-editor`)), session)
+output$`tutorial-exercise-image-try-output` <- renderUI({
+  `tutorial-exercise-image-try-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-add-image-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-add-image-code-editor`)), session)
+output$`tutorial-exercise-add-image-output` <- renderUI({
+  `tutorial-exercise-add-image-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-lab3challenge-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-lab3challenge-code-editor`)), session)
+output$`tutorial-exercise-lab3challenge-output` <- renderUI({
+  `tutorial-exercise-lab3challenge-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","broom","cellranger","cli","colorspace","compiler","crayon","curl","datasets","DBI","dbplyr","digest","dplyr","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","later","lattice","learnr","lifecycle","lubridate","magick","magrittr","markdown","methods","mime","modelr","munsell","nlme","pillar","pkgconfig","png","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","selectr","shiny","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.5","3.6.3","0.5.5","1.1.0","2.0.2","1.4-1","3.6.3","1.3.4","4.3","3.6.3","1.1.0","1.4.2","0.6.25","0.8.4","0.14","0.4.1","1.0.1","0.5.0","1.3.1","0.0.2","3.3.0","1.3.1","3.6.3","3.6.3","3.6.3","0.3.0","2.2.0","0.5.3","0.4.0","1.5.1","1.5.2","1.4.1","1.6.1","1.28","1.0.0","0.20-38","0.10.1","0.2.0","1.7.4","2.3","1.5","1.1","3.6.3","0.9","0.1.6","0.5.0","3.1-144","1.4.3","2.0.3","0.1-7","1.1.0","0.3.3","2.4.1","1.0.3","1.3.1","1.3.1","0.3.0","0.4.5","2.1","1.3-2","0.11","0.3.5","1.1.0","0.4-2","1.4.0","3.6.3","1.4.6","1.4.0","2.1.3","1.0.2","1.0.0","1.3.0","3.6.3","3.6.3","0.2.3","2.1.2","0.12","1.2.2","1.8-4","2.2.1"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">STATS 100 Online labs</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>

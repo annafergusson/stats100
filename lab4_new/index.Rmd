@@ -1,0 +1,525 @@
+---
+title: "STATS 100 Online labs"
+output: 
+  learnr::tutorial:
+    progressive: TRUE
+    allow_skip: FALSE
+    df_print: paged
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(glue)
+library(magick)
+library(jsonlite)
+library(httr)
+library(iNZightPlots)
+library(wordcloud2)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
+tutorial_options(exercise.timelimit = 90)
+
+# I think the stuff below means the previous code is not cached but ???
+options(tutorial.storage = list(
+  # save an arbitrary R object "data" to storage
+   save_object = function(tutorial_id, tutorial_version, user_id, object_id, data) {},
+  # retreive a single R object from storage
+  get_object = function(tutorial_id, tutorial_version, user_id, object_id) { 
+    NULL 
+  },
+  
+  # retreive a list of all R objects stored
+  get_objects = function(tutorial_id, tutorial_version, user_id) { 
+    list() 
+  },
+  
+  # remove all stored R objects
+  remove_all_objects = function(tutorial_id, tutorial_version, user_id) {
+  }
+))
+
+
+# helpful functions
+show <- function(inzy){
+  plot <- magick::image_graph(width = 800, height = 400)
+  inzy
+  dev.off()
+  plot[length(plot)] #show the last layer
+}
+
+getGoogleBooks <- function(query, numBooks = 40){
+  
+
+  combined_query <- glue("{query}&startIndex=0&maxResults=40&country=NZ")
+  
+  bigN <- 0
+  
+  if(httr::GET(combined_query) %>% status_code() == 200)
+  {
+     response <- fromJSON(combined_query)
+     bigN <- response$totalItems 
+     if(bigN == 0){stop("There are no books!")}
+     bigN <- min(numBooks, bigN)
+  }
+   
+ 
+  
+  # make sets of 40
+  sets <- (bigN / 40) %>% ceiling()
+  
+  book_data <- map_df(1 : sets, function(i){
+    startIndex <- (i - 1)*40
+    maxResults <- ifelse(i * 40 < bigN, 
+                         40, 
+                         bigN - startIndex)
+    new_query <- glue("{query}&startIndex={startIndex}&maxResults={maxResults}&country=NZ")
+      if(httr::GET(new_query) %>% status_code() == 200)
+      {
+         response <- fromJSON(new_query)
+         return(response$items %>% flatten())
+      }
+  })
+ 
+  tidy_data <- book_data %>%
+    mutate(authors = volumeInfo.authors,
+           publishedYear = volumeInfo.publishedDate %>% str_sub(1, 4) %>% as.numeric()) %>%
+    select(volumeInfo.title, 
+           authors,
+           volumeInfo.publisher,
+           publishedYear,
+           volumeInfo.description,
+           volumeInfo.pageCount,
+           volumeInfo.language,
+           volumeInfo.imageLinks.smallThumbnail) %>%
+    rename(title = 1, 
+           publisher = 3,
+           description = 5,
+           pageCount = 6,
+           language = 7,
+           coverLink = 8) %>%
+    mutate(authors = authors %>% as.character() %>% str_replace_all("c\\(", "") %>%
+    str_replace_all("\\)","") %>% str_replace_all('\\"', ""),
+    authorType = ifelse(str_count(authors,",") + 1 == 1, "One author", "More than one author"),
+    numWordsTitle = str_count(title, "\\S+"),
+    numWordsDescription = str_count(description, "\\S+"),
+    titleType = ifelse(numWordsTitle > 3, "Four or more words","Up to three words")) %>%
+    select(title, numWordsTitle, titleType, authors, authorType, publishedYear, publisher, description, numWordsDescription, pageCount,language, coverLink) 
+}
+
+# pre load data
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22Picture+Books%22"
+books_data <- getGoogleBooks(query = query, numBooks = 200)
+```
+
+```{css}
+@import url('https://fonts.googleapis.com/css?family=Inconsolata|Londrina+Solid&display=swap');
+
+h1, h2, h3{
+  font-family: 'Londrina Solid', cursive;
+}
+
+h3 {
+  color: #f5af86;
+}
+
+h4 {
+  font-family: 'Inconsolata', monospace;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #f5af86;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #f5af86;
+  opacity: 0.8;
+}
+
+.myButtonSelected {
+  background-color:#666666;
+}
+
+.myButtonSelected:hover, .myButtonSelected:focus{
+  background-color:#666666;
+}
+
+body, .btn{
+  font-family: 'Inconsolata', monospace;
+  font-size: 12pt;
+}
+
+a {
+  color: #000000;
+  font-weight: bold;
+  background-color: #F0F0F0;
+}
+
+a:hover, a:focus {
+  color: #000000;
+  opacity: 0.8;
+}
+
+blockquote {
+  font-size: 12pt;
+  background-color: #f5af86;
+  padding: 10px;
+  color: #000000;
+}
+
+.highlight {
+  background-color: #F0F0F0;
+}
+
+td {
+  padding: 10px;
+}
+
+tr {
+  border: solid #ddd 1px;
+}
+
+.center-align{ text-align:center;}
+
+img {
+  width:100%
+}
+```
+
+```{js echo=FALSE}
+$(function() {
+var editor;
+$('.ace_editor').each(function( index ) {
+  editor = ace.edit(this);
+  editor.getSession().setUseWrapMode(true);
+  editor.setFontSize("16px");
+  });
+  
+  $(".topic").click(function(){
+    if($(this).text() == "Return to home page"){
+    window.location.href = "https://stats100.docker.stat.auckland.ac.nz/";
+    }
+  })
+
+})
+```
+
+
+## Lab 4
+
+### Visualising data from APIs
+
+In this lab, you will learn how to get data from an API and to visualise this data using iNZight plots created with `R` code.
+
+> The recommended start date for this lab is **Week 8**, as you'll use statistical and computational ideas covered in Topic 3A (Week 7).
+
+### How can you access books online?
+
+We'll use data from Google Books for this lab, so watch the short video below to find out a little more about about this digital service and how people use it! 
+
+![](https://youtu.be/zz_vG9b9dv0)
+
+> Just a reminder that you can also access thousands of books online through our university library!
+
+### Go find a book!
+
+Head to the <a href="https://books.google.com/" target="_blank">Google books search page (click this link)</a> and search for books about *data science*.
+
+> What data or variables can you see available for a book when you click on its link? What kinds of things could we compare across books from the same search?
+
+Then watch the short video below to see how many of the variables you found that Anna found as well!
+
+![](https://youtu.be/n2ZpQgc3rDA)
+
+### Getting data
+
+We can get data about books from the Google books API using a few different ways of searching:
+
+  1. Search for books using general key words
+  2. Search for books from within a certain category (`subject:`)
+  3. Search for books with a certain word or words in the title (`intitle:`)
+  4. Search for books by a certain author (`inauthor:`)
+ 
+To use the Google Books API, we first have to form a query to send to the service, which is how we ask for books! In the video, I showed how you can start to spot the kinds of queries used in the URLs of web pages.
+
+> Click on the link below to open a "web page" - it won't look like the web pages you are used to seeing, as it will only show text.
+
+<a href="https://www.googleapis.com/books/v1/volumes?q=intitle:%22data+science%22" target="blank">https://www.googleapis.com/books/v1/volumes?q=intitle:%22data+science%22</a>
+
+### What the JSON?
+
+What you will see on the web page is "data" formatted in way for computers to understand **but you'll probably be able to read it and make sense of it as well!** This particular structure is called JSON (JavaScript Object Notation). The example below shows you data from the first book in the search results, as JSON - look at all the data/variables!
+
+```{r JSON-example}
+url <- "https://www.googleapis.com/books/v1/volumes?q=intitle:%22data+science%22"
+response <- GET(url)
+json_data <- content(response, "parsed") 
+json_data$items[[1]] %>% toJSON() %>% prettify()
+```
+
+> Can you spot where to find the URL for the book cover in the JSON printed above?
+
+Watch the short video below where Anna shows how to read JSON!
+
+![](https://youtu.be/P4sPX2k2Lmk)
+
+
+### Judging books by their covers
+
+> Anna has written a function that will make the search query request for you and return the data from the Google Books API. Programmers do this kind of helpful work all the time, by wrapping these functions up in packages for others to use! 
+
+The function Anna has written is called `getGoogleBooks()`. 
+
+The arguments are:
+
+- `query` the URL query you want to use to search for books
+- `numBooks` how many books you want, the default is 40
+
+To show this function in action, run the code below to grab the first ten books from a search for books with the subject "Picture+Books" and see what happens! 
+
+```{r book-covers, exercise=TRUE, exercise.lines=12}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22Picture+Books%22"
+
+data <- getGoogleBooks(query = query, numBooks = 10)
+
+data %>%
+  pull(coverLink) %>%
+  image_read() %>%
+  image_append() %>%
+  image_scale(1500)
+```
+
+### Cats of course! {.tabset}
+
+Do books about cats show cats on their covers?
+
+Try changing the code below to find out!
+
+> Change just the part of the query that says `Picture+Books` to `Cats`
+
+#### Give it a go!
+
+```{r book-covers-cat, exercise=TRUE, exercise.lines=12}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22Picture+Books%22"
+
+data <- getGoogleBooks(query = query, numBooks = 10)
+
+data %>%
+  pull(coverLink) %>%
+  image_read() %>%
+  image_append() %>%
+  image_scale(1500)
+```
+
+#### An example answer
+
+```{r book-covers-cat-ans, echo=TRUE}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22Cats%22"
+
+data <- getGoogleBooks(query = query, numBooks = 10)
+
+data %>%
+  pull(coverLink) %>%
+  image_read() %>%
+  image_append() %>%
+  image_scale(1500)
+```
+
+### Looking inside the books for data
+
+For the code, I've already used the function `getGoogleBooks()` to obtain data on 200 picture books from Google Books, and given this data the name `books_data`.
+
+> Run the code and then use the interactive data table to find out what variables I've selected and developed that you can use to make plots. The arrow at the top right of the table will move you across the columns/variables, and the pages at the bottom will move you down across the rows/entities.
+
+```{r child-data, exercise=TRUE}
+books_data
+```
+
+### Let's make some plots!
+
+> Making plots from iNZight is as easy with code as it is when using the software tool!
+
+To make the plot below with iNZight, you would select `authorType` as the first variable.
+
+```{r inzight-demo}
+show(iNZightPlot(data = books_data, authorType))
+```
+
+Here's the other variables we could have used to make plots:
+
+`r names(data)`
+
+> Run the code below first to reproduced the plot above, and then try changing the code to create plots of other variables.
+
+```{r inzight-one, exercise=TRUE, exercise.lines=10}
+show(iNZightPlot(data = books_data, 
+                 authorType))
+
+show(iNZightPlot(data = books_data, 
+                 numWordsTitle))
+```
+
+### It takes two baby!
+
+> To make plots with two variables with iNZight, 
+you would select another variable as the second variable.
+
+With the code version, we do a similar thing - just add another variable as an argument to the `iNZightPlot()` function!
+
+```{r inzight-two, exercise=TRUE}
+show(iNZightPlot(data = books_data, 
+                 authorType, 
+                 titleType))
+
+show(iNZightPlot(data = books_data, 
+                 numWordsTitle, 
+                 authorType))
+```
+
+### Take an OK plot and make it more colourful! {.tabset}
+
+We can add more arguments to the `iNZightPlot()` function to change the colours.
+
+For example:
+
+ - if you add `bg = "#FFC0CB"`, the background will be pink
+ - if you add `col.pt = "#FFFFFF"`, the outline of the points will be white
+ - if you add `fill.pt = "#000000"`, the points will be filled with black (use "transparent" to make them empty)
+ - if you add `box.fill = "#FFFF00"`, the box plot will be filled with yellow
+ - if you add `bar.fill = "#0000FF"`, the bars will be filled with blue
+ 
+> Try adding these arguments to the code below. Think about which plot which colour argument makes sense for, and don't forget to use a `,` between each argument!
+
+#### Give it a go!
+ 
+```{r inzight-colour, exercise=TRUE}
+show(iNZightPlot(data = books_data, 
+                 numWordsTitle, 
+                 authorType,
+                 bg = "#FFC0CB"))
+
+show(iNZightPlot(data = books_data, 
+                 titleType, 
+                 bg = "#FFC0CB"))
+```
+
+#### An example answer
+
+```{r inzight-colour-ans, echo=TRUE}
+show(iNZightPlot(data = books_data, 
+                 numWordsTitle, 
+                 authorType,
+                 bg = "#FFC0CB",
+                 col.pt = "#FFFFFF",
+                 fill.pt = "#000000",
+                 box.fill = "#FFFF00"))
+
+show(iNZightPlot(data = books_data, 
+                 titleType, 
+                 bg = "#FFC0CB",
+                 bar.fill = "#0000FF"))
+```
+
+### Um, so maybe better colours next time?
+
+You'll get a chance to choose your own colours in the lab challenge. But just before that, let's have a little bit more fun and add an animated GIF to our plot!
+
+You know how to get image URLs from Lab 3, remember? Right click on the image and select "Copy image address!" Searching for "animated gif transparent background cat" using Google images can be helpful (change cat for something else if you want of course!)
+
+> Run the code below. Then can you work out how to change the code below to show a different animated gif? Can you work out how to change the size of the animated gif? Can you work out how to change where it appears on the plot?
+
+```{r inzight-magick, exercise=TRUE}
+# set the URL to an animated GIF
+gif_url <- "https://i.gifer.com/PYg.gif"
+
+# you can change the size of the gif using image_scale()
+fun_times <- image_read(gif_url) %>%
+  image_scale(800)
+
+# you can change where the GIF goes using offset
+show(iNZightPlot(data = books_data, 
+                 x = publishedYear)) %>%
+  image_composite(fun_times, offset = "+70+130") %>%
+  image_animate(fps = 10, optimize = TRUE)
+```
+
+### How to get the books you want?
+
+All you need to do is change the query! Just focus on the part of the URL that starts with `q=` i.e. `q=subject:%22baking%22`
+
+> If you want to use more than one word, you need to put a + for every space. Leave the `%22` either side of your search words - these are special "encoding" characters that are used instead of `"`
+
+Go ahead - search for books from another subject, and check the data produced to see if it's what you expected! If you're feeling adventurous, you could change the query to something more general like `q=%22Psychology%22` to search for anything related to your search word(s) or `q=intitle:%22harry+potter%22` to focus on books with certain words in their title.
+
+```{r books-own, exercise=TRUE, exercise.lines=6}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22baking%22"
+
+data <- getGoogleBooks(query = query, numBooks = 20)
+
+data
+```
+
+### Ok, one more fun thing before the lab challenge!
+
+Although the focus has been on iNZight plots, one thing iNZight can't currently do is make word clouds! Word clouds are not necessarily the best way to show which words are used more often than others in the titles of books, but they can be fun to make.
+
+In the code below, I've introduced a bunch of new functions we haven't used yet, but don't worry too much about them for now! Focus on just a couple of lines that you might want to change:
+
+ - the `query` of course - you can change this to whatever books you want to show
+ - the `data` - you can change the number of books used to make the word cloud
+ - the `stop_words` are the words you **don't** want to be included in your word cloud - you can add more words to this, just put `|` between each word and write them in lowercase 
+ - the `color_palette` are the hex codes you want to use to colour your word cloud (using the US spelling color) - you can change these hex codes
+ - within the `wordcloud2()` function, you could change the `size` argument
+ 
+This site can be useful for picking colours that look nice together: <a href="https://coolors.co/generate" target="blank">https://coolors.co/generate</a>
+
+> Go ahead and modify the code to make your own word cloud!
+
+```{r books-clouds, exercise=TRUE, exercise.lines=20}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22baking%22"
+
+data <- getGoogleBooks(query = query, numBooks = 20)
+
+stop_words <- "and|the|to|of"
+
+words <- data %>%
+  select(title) %>%
+  separate_rows(title, sep = " ") %>%
+  mutate(title_words = title %>% str_to_lower()) %>%
+  filter(!str_detect(title_words, stop_words)) %>%
+  count(title_words, sort = TRUE)
+
+color_palette <- c("#d8dcff", "#aeadf0", "#c38d94","#a76571","#565676")
+colors <- rep_len(color_palette, nrow(words))
+  
+wordcloud2(words, size = 0.5, color = colors)
+```
+
+### Lab challenge!
+
+Your challenge is to create at least three different graphics/plots.
+
+ + Use the `getGoogleBooks()` function to get 200 books based on your own query (you might get less if your query is very specific!)
+ + Use the `iNZightPlot()` function to create at least two different plots
+ + Do something creative with this book data by either: changing the colours on the plots, adding an animated GIF that is related to your search, creating a word cloud, or displaying the book covers!
+
+There's just a little bit of code provided to get you started for this lab challenge! <mark>Scroll back up the page to see examples of the other code you need and how to make the changes!</mark>
+
+> You will need to take screenshots of **the code you used** and the **three graphics/plots produced**, and include these in your submission for this lab.
+
+```{r lab4challenge, exercise = TRUE, exercise.lines = 30}
+query <- "https://www.googleapis.com/books/v1/volumes?q=subject:%22Picture+Books%22"
+
+data <- getGoogleBooks(query = query, numBooks = 10)
+
+show(iNZightPlot(data = books_data, 
+                 authorType))
+```
+
+## Return to home page

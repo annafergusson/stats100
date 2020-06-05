@@ -102,12 +102,14 @@ For more information, contact [Anna Fergusson](https://www.stat.auckland.ac.nz/p
 ## Labs
 
  - [Lab information](lab_info/)
- - [Lab 1](lab1/) 
- - [Lab 2](lab2/) 
- - [Lab 3](lab3/) 
- - [Lab 4](lab4/) 
- - [Lab 5](lab5/) 
- - [Lab 6](lab6/)
+ - [Lab 1](lab1/) ([new](lab1_new/))
+ - [Lab 2](lab2/) ([new](lab2_new/))
+ - [Lab 3](lab3/) ([new](lab3_new/))
+ - [Lab 4](lab4/) ([new](lab4_new/))
+ - [Lab 5](lab5/) ([new](lab5_new/))
+ - [Lab 6](lab6/) ([new](lab6_new/))
+
+> The "new" links for each lab will start the lab as if it were new, with no code/plots saved from any of your earlier work. You can try this option if a particular lab is having issues with running code or disconnecting you from the server.
 
 :::
 
